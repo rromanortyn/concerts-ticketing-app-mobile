@@ -8,7 +8,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -41,7 +43,11 @@
     "@types/react": "~19.1.0",
     "typescript": "~5.9.2",
     "eslint": "^9.25.0",
-    "eslint-config-expo": "~10.0.0"
+    "eslint-config-expo": "~10.0.0",
+    "storybook": "^10.3.5",
+    "@storybook/react-native-web-vite": "^10.3.5",
+    "vite": "^8.0.8",
+    "eslint-plugin-storybook": "^10.3.5"
   },
   "private": true
 }
