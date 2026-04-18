@@ -14,12 +14,12 @@ const AppButton: FC<AppButtonProps> = (props) => {
 
   return (
     <TouchableOpacity
-      style={styles(type).touchableOpacity}
+      style={styles({ type, isDisabled }).touchableOpacity}
       disabled={isDisabled}
       activeOpacity={0.7}
       onPress={onPress}
     >
-      <Text style={styles(type).text}>{title}</Text>
+      <Text style={styles({ type, isDisabled }).text}>{title}</Text>
     </TouchableOpacity>
   )
 }

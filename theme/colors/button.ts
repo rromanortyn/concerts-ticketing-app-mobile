@@ -5,9 +5,9 @@ const light = {
     border: 'transparent',
   },
   secondary: {
-    background: '#EDF0F1',
-    text: '#01130A',
-    border: '#01130A',
+    background: '#F7F7F8',
+    text: '#3C896D',
+    border: '#3C896D',
   },
   text: {
     background: 'transparent',

@@ -10,7 +10,7 @@ const meta = {
   component: AppButton,
   decorators: [
     (Story) => (
-      <View style={{ flex: 1, alignItems: 'flex-start' }}>
+      <View style={{ width: 150, alignItems: 'flex-start' }}>
         <Story />
       </View>
     ),
