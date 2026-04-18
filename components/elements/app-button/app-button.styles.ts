@@ -1,26 +1,27 @@
 import { StyleSheet } from 'react-native'
 
+import colors from '@/theme/colors/button'
 import { ButtonType } from './app-button.props'
 
 const backgroundColors: Record<ButtonType, string> = {
-  primary: '#0a7ea4',
-  secondary: '#6c757d',
-  danger: '#dc3545',
-  text: 'transparent',
+  primary: colors.light.primary.background,
+  secondary: colors.light.secondary.background,
+  text: colors.light.text.background,
+  danger: colors.light.danger.background,
 }
 
 const textColors: Record<ButtonType, string> = {
-  primary: '#ece8e8',
-  secondary: '#ece8e8',
-  danger: '#ece8e8',
-  text: '#0a7ea4',
+  primary: colors.light.primary.text,
+  secondary: colors.light.secondary.text,
+  text: colors.light.text.text,
+  danger: colors.light.danger.text,
 }
 
 const borderColors: Record<ButtonType, string> = {
-  primary: 'transparent',
-  secondary: 'transparent',
-  danger: 'transparent',
-  text: 'transparent',
+  primary: colors.light.primary.border,
+  secondary: colors.light.secondary.border,
+  danger: colors.light.danger.border,
+  text: colors.light.text.border,
 }
 
 const touchableOpacityStyles: Record<ButtonType, object> = {
