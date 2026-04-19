@@ -9,7 +9,7 @@ import AppButton from '@/components/elements/app-button/app-button'
 // The AppLink component should have the same styling as the AppButton component
 const Index = () => {
   return (
-    <SafeAreaView style={{ backgroundColor: '#ece8e8', height: '100%', paddingHorizontal: 20 }}>
+    <SafeAreaView style={{ height: '100%', paddingHorizontal: 20 }}>
       <View style={{ flex: 1 }}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <Text style={{ fontFamily: 'Montserrat', textAlign: 'center', fontWeight: '700', fontSize: 22, marginBottom: 12 }}>Welcome to EventJoy</Text>
@@ -19,7 +19,8 @@ const Index = () => {
         <View style={{ height: 'auto', marginBottom: 35 }}>
           <View style={{ marginBottom: 20 }}>
             <Link href='/sign-up'>
-              <AppButton title='Create an account' onPress={() => {}} />
+              Create an account
+              {/* <AppButton title='Create an account' onPress={() => {}} /> */}
             </Link>
           </View>
           <AppButton
@@ -27,6 +28,13 @@ const Index = () => {
             onPress={() => {}}
             type='secondary'
           />
+
+
+          <Link href='/storybook'>
+            <Text style={{ textAlign: 'center', fontSize: 16, color: '#3C896D' }}>Open Storybook</Text>
+          </Link>
+
+
         </View>
       </View>
     </SafeAreaView>
