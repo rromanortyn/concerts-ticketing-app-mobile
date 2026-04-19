@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { StyleProp, ViewStyle } from 'react-native'
+import { StyleProp, TextInputProps, ViewStyle } from 'react-native'
 
 interface AppTextFieldProps {
   placeholder: string,
@@ -10,6 +10,9 @@ interface AppTextFieldProps {
   type?: 'text' | 'password',
   helperText?: string,
   isDisabled?: boolean,
+  autoCapitalize?: TextInputProps['autoCapitalize'],
+  autoComplete?: TextInputProps['autoComplete'],
+  inputMode?: TextInputProps['inputMode'],
   leftAdornment?: ReactNode,
   rightAdornment?: ReactNode,
 }

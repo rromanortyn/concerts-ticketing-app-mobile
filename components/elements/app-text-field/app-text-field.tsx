@@ -20,6 +20,9 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
     onChangeText,
     type = 'primary',
     isDisabled = false,
+    autoCapitalize = 'none',
+    autoComplete = 'off',
+    inputMode = 'text',
     containerStyle,
     leftAdornment,
     rightAdornment,
@@ -57,6 +60,9 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
           placeholder={placeholder}
           placeholderTextColor={isFocused ? '#AFAFAF' : '#605e5e'}
           autoCorrect={false}
+          autoCapitalize={autoCapitalize}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
           onChangeText={onChangeText}
           onFocus={onFocus}
           onBlur={onBlur}

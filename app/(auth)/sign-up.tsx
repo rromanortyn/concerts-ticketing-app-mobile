@@ -1,99 +1,141 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import {
   Text,
   TextInput,
   View
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   AtSign,
-  Lock,
-  UserRound,
+  UserRound
 } from 'lucide-react-native'
+import { Controller, useForm } from 'react-hook-form'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { z } from 'zod'
 
 import AppButton from '@/components/elements/app-button/app-button'
 import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import styles from '@/screens/auth/sign-up/styles'
 
-const SignUp = () => {
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+const signUpSchema = z.object({
+  fullName: z
+    .string()
+    .min(1, 'Full name is required'),
+  email: z
+    .email('Invalid email'),
+})
 
+interface SignUpFormState {
+  fullName: string,
+  email: string,
+}
+
+const getErrorMessage = (message?: string) => {
+  const jsx = message ? <Text style={styles.errorMessage}>{message}</Text> : null
+
+  return jsx
+}
+
+const SignUp = () => {
   const fullNameInputRef = useRef<TextInput>(null)
   const emailInputRef = useRef<TextInput>(null)
-  const passwordInputRef = useRef<TextInput>(null)
-  const confirmPasswordInputRef = useRef<TextInput>(null)
+
+  const {
+    control,
+    handleSubmit,
+  } = useForm({
+    mode: 'onBlur',
+    defaultValues: {
+      fullName: '',
+      email: '',
+    },
+    resolver: zodResolver(signUpSchema),
+  })
+
+  const onSubmit = (data: SignUpFormState) => {
+    console.log(data)
+  }
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <View style={styles.container}>
-        {/* <KeyboardAwareScrollView
-          bottomOffset={20}
-          style={{ flex: 1 }}
-          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20 }}
-          keyboardShouldPersistTaps="handled"
-        > */}
-            <View style={styles.topContainer}>
-              <Text style={styles.title}>Sign Up</Text>
+        <KeyboardAwareScrollView
+          bottomOffset={16}
+          style={styles.keyboardAwareScrollView}
+          contentContainerStyle={styles.contentContainer}
+          keyboardShouldPersistTaps='handled'
+        >
+          <View style={styles.bottomContainer}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Sign</Text>
+              <Text style={styles.titleUp}>Up</Text>
             </View>
 
-            <View style={styles.bottomContainer}>
-              <AppTextField
-                ref={fullNameInputRef}
-                containerStyle={{ marginBottom: 20 }}
-                placeholder='Full name'
-                value={fullName}
-                leftAdornment={
-                  <UserRound style={{ marginLeft: 20 }} />
-                }
-                onChangeText={setFullName}
-              />
-              <AppTextField
-                ref={emailInputRef}
-                containerStyle={{ marginBottom: 20 }}
-                placeholder='Email'
-                value={email}
-                leftAdornment={
-                  <AtSign style={{ marginLeft: 20 }} />
-                }
-                onChangeText={setEmail}
-              />
-              <AppTextField
-                ref={passwordInputRef}
-                containerStyle={{ marginBottom: 20 }}
-                placeholder='Password'
-                value={password}
-                onChangeText={setPassword}
-                type='password'
-                leftAdornment={
-                  <Lock style={{ marginLeft: 20 }} />
-                }
-              />
-              <AppTextField
-                ref={confirmPasswordInputRef}
-                containerStyle={{ marginBottom: 20 }}
-                placeholder='Confirm Password'
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                type='password'
-                leftAdornment={
-                  <Lock style={{ marginLeft: 20 }} />
-                }
-              />
-              <AppButton
-                title='Continue'
-                onPress={() => {}}
-                type='primary'
-              />
-            </View>
-          {/* </KeyboardAwareScrollView> */}
+            <Text style={styles.subtitle}>Create your account to get started</Text>
+
+            <Controller
+              control={control}
+              name='fullName'
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
+                <View style={styles.formFieldContainer}>
+                  <Text style={styles.formFieldLabel}>Full name</Text>
+                  <AppTextField
+                    ref={fullNameInputRef}
+                    containerStyle={styles.formFieldInput}
+                    autoCapitalize='words'
+                    placeholder='Vasia Pupkin'
+                    value={value}
+                    leftAdornment={
+                      <UserRound style={styles.icon} />
+                    }
+                    onChangeText={onChange}
+                  />
+                  {getErrorMessage(error?.message)}
+                </View>
+              )}
+            />
+              
+            <Controller
+              control={control}
+              name='email'
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
+                <View style={styles.formFieldContainer}>
+                  <Text style={styles.formFieldLabel}>Email</Text>
+                  <AppTextField
+                    ref={emailInputRef}
+                    containerStyle={styles.formFieldInput}
+                    placeholder='vasiapupkin@whatever.com'
+                    value={value}
+                    autoComplete='email'
+                    inputMode='email'
+                    leftAdornment={
+                      <AtSign style={styles.icon} />
+                    }
+                    onChangeText={onChange}
+                  />
+                  {getErrorMessage(error?.message)}
+                </View>
+              )}
+            />
+          </View>
+
+          <AppButton
+            title='Continue'
+            onPress={handleSubmit(onSubmit)}
+            type='primary'
+          />
+        </KeyboardAwareScrollView>
       </View>
     </SafeAreaView>
   )
 }
 
 export default SignUp
-
