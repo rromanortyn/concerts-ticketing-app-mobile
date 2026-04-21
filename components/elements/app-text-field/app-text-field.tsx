@@ -5,6 +5,7 @@ import {
   useState
 } from 'react'
 import {
+  GestureResponderEvent,
   TextInput,
   TouchableWithoutFeedback,
   View,
@@ -44,12 +45,18 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
     (ref as RefObject<TextInput>)?.current?.focus()
   }
 
+  const onRightAdornmentPress = (event: GestureResponderEvent) => {
+    event.stopPropagation()
+  }
+
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View
         style={[styles.container, containerStyle]}
       >
-        {leftAdornment}
+        <View style={styles.leftAdornmentContainer}>
+          {leftAdornment}
+        </View>
         <TextInput
           ref={ref}
           style={styles.textInput}
@@ -67,7 +74,11 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
           onFocus={onFocus}
           onBlur={onBlur}
         />
-        {rightAdornment}
+        <TouchableWithoutFeedback onPress={onRightAdornmentPress}>
+          <View style={styles.rightAdornmentContainer}>
+            {rightAdornment}
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     </TouchableWithoutFeedback>
   )

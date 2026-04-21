@@ -57,15 +57,35 @@ const touchableOpacityStyles: Record<ButtonType, object> = {
 const styles = ({ type, isDisabled }: Options) => StyleSheet.create({
   touchableOpacity: {
     ...touchableOpacityStyles[type],
+    position: 'relative',
     width: '100%',
     height: 60,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    flexDirection: 'row',
     opacity: isDisabled ? 0.5 : 1,
   },
   text: {
     color: textColors[type],
     fontSize: 16,
+    flexGrow: 1,
+    textAlign: 'center',
+  },
+  leftIconContainer: {
+    position: 'absolute',
+    left: 20,
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rightIconContainer: {
+    position: 'absolute',
+    right: 20,
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })
 

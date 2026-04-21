@@ -13,10 +13,15 @@ const styles = (isFocused: boolean) => StyleSheet.create({
   },
   textInput: {
     padding: 20,
-    width: '100%',
+    flexGrow: 1,
     color: '#11181C',
   },
-
+  leftAdornmentContainer: {
+    marginLeft: 20,
+  },
+  rightAdornmentContainer: {
+    marginRight: 20,
+  },
 })
 
 export default styles
