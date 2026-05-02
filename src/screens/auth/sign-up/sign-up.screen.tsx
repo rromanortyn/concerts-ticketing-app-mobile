@@ -11,6 +11,7 @@ interface SignUpDetails {
 
 const SignUpScreen: FC = () => {
   const [step, setStep] = useState<number>(0)
+
   const [details, setDetails] = useState<SignUpDetails>({
     fullName: '',
     email: '',
@@ -18,7 +19,7 @@ const SignUpScreen: FC = () => {
   })
 
   const onFirstStepSubmit = (data: Omit<SignUpDetails, 'password'>) => {
-    // setDetails((prev) => ({ ...prev, ...data }))
+    setDetails((prev) => ({ ...prev, ...data }))
     setStep(1)
     console.log(data)
   }
@@ -27,9 +28,23 @@ const SignUpScreen: FC = () => {
     console.log(data)
   }
 
+  const onGoBackFromSecondStep = (password: string) => {
+    setDetails((prev) => ({ ...prev, password }))
+    setStep(0)
+  }
+
   const steps = [
-    <SignUpFormFirstStep onSubmit={onFirstStepSubmit} />,
-    <SignUpFormSecondStep onSubmit={onSecondStepSubmit} />,
+    <SignUpFormFirstStep
+      defaultValues={details}
+      onSubmit={onFirstStepSubmit} />,
+    <SignUpFormSecondStep
+      defaultValues={{
+        password: details.password,
+        confirmPassword: details.password,
+      }}
+      onGoBack={onGoBackFromSecondStep}
+      onSubmit={onSecondStepSubmit}
+    />,
   ]
 
   return (

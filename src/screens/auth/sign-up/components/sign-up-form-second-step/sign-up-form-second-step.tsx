@@ -1,74 +1,100 @@
-import { FC, useRef } from 'react'
+import {
+  FC,
+  useRef,
+  useState,
+} from 'react'
 import {
   Text,
   TextInput,
-  View,
+  TouchableWithoutFeedback,
+  View
 } from 'react-native'
-
-import { Controller, useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  ArrowRight,
+  ArrowLeft,
   EyeIcon,
+  EyeOffIcon,
   LockIcon
 } from 'lucide-react-native'
-import z from 'zod'
+import { Controller, useForm } from 'react-hook-form'
 
 import AppButton from '@/components/elements/app-button/app-button'
 import AppTextField from '@/components/elements/app-text-field/app-text-field'
+import type { SignUpSecondStepSchema } from './consts/sign-up-second-step-schema'
+import signUpSecondStepSchema from './consts/sign-up-second-step-schema'
 
+import getErrorMessageJsx from '@/utils/get-error-message-jsx'
 import styles from './styles'
 
-const signUpSecondStepSchema = z
-  .object({
-    password: z
-      .string()
-      .min(1, 'Password is required'),
-    confirmPassword: z
-      .string()
-      .min(1, 'Confirm password is required'),
-  })
-  .refine(
-    (data) => data.password === data.confirmPassword,
-    {
-      message: 'Passwords do not match',
-      path: ['confirmPassword'],
-    },
-  )
-
-interface SignUpFormState {
-  password: string,
-  confirmPassword: string,
-}
-
-const getErrorMessage = (message?: string) => {
-  const jsx = message ? <Text style={styles.errorMessage}>{message}</Text> : null
-
-  return jsx
-}
-
 interface SignUpFormSecondStepProps {
-  onSubmit: (data: SignUpFormState) => void
+  onGoBack: (password: string) => void,
+  onSubmit: (data: SignUpSecondStepSchema) => void,
+  defaultValues?: {
+    password: string,
+    confirmPassword: string,
+  },
 }
 
 const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
-  const { onSubmit } = props
+  const { onGoBack, onSubmit, defaultValues } = props
 
   const passwordInputRef = useRef<TextInput>(null)
   const confirmPasswordInputRef = useRef<TextInput>(null)
 
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState<boolean>(false)
+
   const {
     control,
+    trigger,
+    getValues,
     handleSubmit,
-  } = useForm<SignUpFormState>({
-    mode: 'onBlur',
-    defaultValues: {
+  } = useForm<SignUpSecondStepSchema>({
+    mode: 'onChange',
+    defaultValues: defaultValues || {
       password: '',
       confirmPassword: '',
     },
     resolver: zodResolver(signUpSecondStepSchema),
   })
+
+  const onPasswordEyePress = () => {
+    setIsPasswordVisible(!isPasswordVisible)
+  }
+
+  const onConfirmPasswordEyePress = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+  }
+
+  const onPasswordChange = (text: string, onChange: (text: string) => void) => {
+    onChange(text)
+    
+    const confirmValue = getValues('confirmPassword')
+
+    // ONLY trigger validation on the second field if it's not empty.
+    // This prevents the minLength error from appearing on an empty field
+    // while the user is still filling out the first one.
+    if (confirmValue && confirmValue.length > 0) {
+      trigger('confirmPassword')
+    }
+  }
+
+  const passwordInputType = isPasswordVisible ? 'text' : 'password'
+  const confirmPasswordInputType = isConfirmPasswordVisible ? 'text' : 'password'
+
+  const passwordEyeIcon = isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />
+  const confirmPasswordEyeIcon = isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />
+  const passwordRightAdornment = (
+    <TouchableWithoutFeedback onPress={onPasswordEyePress}>
+      {passwordEyeIcon}
+    </TouchableWithoutFeedback>
+  )
+  const confirmPasswordRightAdornment = (
+    <TouchableWithoutFeedback onPress={onConfirmPasswordEyePress}>
+      {confirmPasswordEyeIcon}
+    </TouchableWithoutFeedback>
+  )
 
   return (
     <>
@@ -90,19 +116,15 @@ const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
               <AppTextField
                 ref={passwordInputRef}
                 containerStyle={styles.formFieldInput}
-                type='password'
+                type={passwordInputType}
                 autoCapitalize='none'
                 placeholder='Enter your password'
                 value={value}
                 leftAdornment={<LockIcon />}
-                rightAdornment={
-                  // This is for the default (hidden) state
-                  // Otherwise should be the eye icon with a line through it
-                  <EyeIcon />
-                }
-                onChangeText={onChange}
+                rightAdornment={passwordRightAdornment}
+                onChangeText={(text) => onPasswordChange(text, onChange)}
               />
-              {getErrorMessage(error?.message)}
+              {getErrorMessageJsx(error?.message)}
             </View>
           )}
         />
@@ -119,38 +141,32 @@ const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
               <AppTextField
                 ref={confirmPasswordInputRef}
                 containerStyle={styles.formFieldInput}
-                type='password'
+                type={confirmPasswordInputType}
                 autoCapitalize='none'
                 placeholder='Confirm password'
                 value={value}
-                autoComplete='email'
-                inputMode='email'
                 leftAdornment={<LockIcon />}
-                rightAdornment={
-                  // This is for the default (hidden) state
-                  // Otherwise should be the eye icon with a line through it
-                  <EyeIcon />
-                }
+                rightAdornment={confirmPasswordRightAdornment}
                 onChangeText={onChange}
               />
-              {getErrorMessage(error?.message)}
+              {getErrorMessageJsx(error?.message)}
             </View>
           )}
         />
       </View>
 
       <AppButton
-        title='Continue'
-        onPress={handleSubmit(onSubmit)}
-        type='primary'
-        rightIcon={<ArrowRight color='#ECE8E8' />}
+        title='Go back'
+        onPress={() => onGoBack(getValues('password'))}
+        type='secondary'
+        leftIcon={<ArrowLeft color='#3C896D' />}
+        style={styles.goBackButton}
       />
 
       <AppButton
-        title='Continue'
+        title='Sign up'
         onPress={handleSubmit(onSubmit)}
         type='primary'
-        rightIcon={<ArrowRight color='#ECE8E8' />}
       />
     </>
   )

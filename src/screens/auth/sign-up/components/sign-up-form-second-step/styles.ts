@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 12,
   },
+  goBackButton: {
+    marginBottom: 20,
+  },
 })
 
 export default styles

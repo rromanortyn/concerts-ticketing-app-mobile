@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { StyleProp, ViewStyle } from 'react-native'
 
 const buttonTypes = [
   'primary',
@@ -16,6 +17,7 @@ interface AppButtonProps {
   isDisabled?: boolean,
   leftIcon?: ReactNode,
   rightIcon?: ReactNode,
+  style?: StyleProp<ViewStyle>,
 }
 
 export default AppButtonProps

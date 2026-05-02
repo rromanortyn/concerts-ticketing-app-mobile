@@ -18,6 +18,7 @@ import z from 'zod'
 import AppButton from '@/components/elements/app-button/app-button'
 import AppTextField from '@/components/elements/app-text-field/app-text-field'
 
+import getErrorMessageJsx from '@/utils/get-error-message-jsx'
 import styles from './styles'
 
 const signUpFirstStepSchema = z.object({
@@ -33,18 +34,13 @@ interface SignUpFirstStepState {
   email: string,
 }
 
-const getErrorMessage = (message?: string) => {
-  const jsx = message ? <Text style={styles.errorMessage}>{message}</Text> : null
-
-  return jsx
-}
-
 interface SignUpFormFirstStepProps {
-  onSubmit: (data: SignUpFirstStepState) => void
+  onSubmit: (data: SignUpFirstStepState) => void,
+  defaultValues?: SignUpFirstStepState,
 }
 
 const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
-  const { onSubmit }= props
+  const { onSubmit, defaultValues } = props
 
   const fullNameInputRef = useRef<TextInput>(null)
   const emailInputRef = useRef<TextInput>(null)
@@ -54,7 +50,7 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
     handleSubmit,
   } = useForm<SignUpFirstStepState>({
     mode: 'onBlur',
-    defaultValues: {
+    defaultValues: defaultValues || {
       fullName: '',
       email: '',
     },
@@ -88,7 +84,7 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
                   }
                   onChangeText={onChange}
                 />
-                {getErrorMessage(error?.message)}
+                {getErrorMessageJsx(error?.message)}
               </View>
             )}
           />
@@ -114,7 +110,7 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
                   }
                   onChangeText={onChange}
                 />
-                {getErrorMessage(error?.message)}
+                {getErrorMessageJsx(error?.message)}
               </View>
             )}
           />

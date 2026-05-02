@@ -10,13 +10,17 @@ const AppButton: FC<AppButtonProps> = (props) => {
     onPress,
     leftIcon,
     rightIcon,
+    style,
     type = 'primary',
     isDisabled = false,
   } = props
 
   return (
     <TouchableOpacity
-      style={styles({ type, isDisabled }).touchableOpacity}
+      style={[
+        styles({ type, isDisabled }).touchableOpacity,
+        style,
+      ]}
       disabled={isDisabled}
       activeOpacity={0.7}
       onPress={onPress}
