@@ -1,43 +1,64 @@
-import { Link } from 'expo-router'
-import { Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { ActivityIndicator } from 'react-native'
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useQuery } from '@tanstack/react-query'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import AppButton from '@/components/elements/app-button/app-button'
+import axiosInstance from '@/consts/axios-instance'
+import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
 
-// <AppButton title='Create an account' /> should be replaced with an AppLink component
-// <AppLink href='/sign-up' />
-// The AppLink component should have the same styling as the AppButton component
+import HomeScreen from '@/screens/home/home.screen'
+import IntroScreen from '@/screens/intro/intro.screen'
+
 const Index = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isGetMeQueryEnabled, setIsGetMeQueryEnabled] = useState<boolean>(false)
+
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      const accessToken = await AsyncStorage.getItem(AsyncStorageKey.AccessToken)
+
+      if (accessToken) {
+        setIsGetMeQueryEnabled(true)
+      }
+
+      else {
+        setIsLoading(false)
+      }
+    }
+
+    checkAccessToken()
+  }, [])
+
+  const getMeQuery = useQuery({
+    queryKey: ['me'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/me')
+      console.log(response.data)
+      return response.data
+    },
+    enabled: isGetMeQueryEnabled,
+  })
+
+  useEffect(() => {
+    if (getMeQuery.isSuccess || getMeQuery.isError) {
+      setIsLoading(false)
+    }
+  }, [getMeQuery.isSuccess, getMeQuery.isError])
+
+  if (isLoading) {
+    return <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' />
+  }
+
   return (
-    <SafeAreaView style={{ height: '100%', paddingHorizontal: 20 }}>
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text style={{ fontFamily: 'Montserrat', textAlign: 'center', fontWeight: '700', fontSize: 22, marginBottom: 12 }}>Welcome to EventJoy</Text>
-          <Text style={{ textAlign: 'center', fontSize: 16 }}>Create an account and experience seamless event planning.</Text>
-        </View>
-
-        <View style={{ height: 'auto', marginBottom: 35 }}>
-          <View style={{ marginBottom: 20 }}>
-            <Link href='/sign-up'>
-              Create an account
-              {/* <AppButton title='Create an account' onPress={() => {}} /> */}
-            </Link>
-          </View>
-          <AppButton
-            title='Login'
-            onPress={() => {}}
-            type='secondary'
-          />
-
-
-          <Link href='/storybook'>
-            <Text style={{ textAlign: 'center', fontSize: 16, color: '#3C896D' }}>Open Storybook</Text>
-          </Link>
-
-
-        </View>
-      </View>
-    </SafeAreaView>
+    <>
+      {getMeQuery.data ? <HomeScreen /> : (
+        <SafeAreaView style={{ height: '100%', paddingHorizontal: 20 }}>
+          <IntroScreen />
+        </SafeAreaView>
+      )}
+    </>
   )
 }
 

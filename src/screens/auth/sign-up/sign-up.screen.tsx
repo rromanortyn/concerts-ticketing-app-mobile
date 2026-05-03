@@ -1,5 +1,12 @@
 import { FC, useState } from 'react'
 
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from 'expo-router'
+
+import axiosInstance from '@/consts/axios-instance'
+import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
+import Role from '@/types/enums/role.enum'
 import SignUpFormFirstStep from './components/sign-up-form-first-step/sign-up-form-first-step'
 import SignUpFormSecondStep from './components/sign-up-form-second-step/sign-up-form-second-step'
 
@@ -18,14 +25,38 @@ const SignUpScreen: FC = () => {
     password: '',
   })
 
+  const router = useRouter()
+
+  const signUpMutation = useMutation({
+    mutationFn: async (data: SignUpDetails) => {
+      const response = await axiosInstance.post('/auth/sign-up', data)
+
+      return response.data
+    },
+    onSuccess: async (data) => {
+      await AsyncStorage.setItem(AsyncStorageKey.AccessToken, data.accessToken)
+
+      router.dismissAll()
+      router.replace('/')
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
   const onFirstStepSubmit = (data: Omit<SignUpDetails, 'password'>) => {
     setDetails((prev) => ({ ...prev, ...data }))
     setStep(1)
-    console.log(data)
   }
 
-  const onSecondStepSubmit = (data: {password: string, confirmPassword: string}) => {
-    console.log(data)
+  const onSecondStepSubmit = async (data: Pick<SignUpDetails, 'password'>) => {
+    const dto = {
+      ...details,
+      password: data.password,
+      role: Role.Attendee,
+    }
+
+    await signUpMutation.mutateAsync(dto)
   }
 
   const onGoBackFromSecondStep = (password: string) => {

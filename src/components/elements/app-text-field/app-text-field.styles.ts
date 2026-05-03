@@ -1,7 +1,5 @@
 import { StyleSheet } from 'react-native'
 
-
-
 const styles = (isFocused: boolean) => StyleSheet.create({
   container: {
     flexDirection: 'row',

@@ -1,9 +1,11 @@
 import {
   FC,
+  useEffect,
   useRef,
   useState,
 } from 'react'
 import {
+  BackHandler,
   Text,
   TextInput,
   TouchableWithoutFeedback,
@@ -15,16 +17,16 @@ import {
   ArrowLeft,
   EyeIcon,
   EyeOffIcon,
-  LockIcon
+  LockIcon,
 } from 'lucide-react-native'
 import { Controller, useForm } from 'react-hook-form'
 
 import AppButton from '@/components/elements/app-button/app-button'
 import AppTextField from '@/components/elements/app-text-field/app-text-field'
+import getErrorMessageJsx from '@/utils/get-error-message-jsx'
 import type { SignUpSecondStepSchema } from './consts/sign-up-second-step-schema'
 import signUpSecondStepSchema from './consts/sign-up-second-step-schema'
 
-import getErrorMessageJsx from '@/utils/get-error-message-jsx'
 import styles from './styles'
 
 interface SignUpFormSecondStepProps {
@@ -44,6 +46,21 @@ const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState<boolean>(false)
+
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        onGoBack(getValues('password'))
+
+        return true
+      },
+    )
+
+    return () => {
+      subscription.remove()
+    }
+  }, [])
 
   const {
     control,
