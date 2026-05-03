@@ -12,7 +12,7 @@ const AppTypography: FC<AppTypographyProps> = (props) => {
 	} = props
 
   return (
-		<Text style={[styles[variant], style]}>{text}</Text>
+		<Text numberOfLines={2} style={[styles[variant], style]}>{text}</Text>
 	)
 }
 
