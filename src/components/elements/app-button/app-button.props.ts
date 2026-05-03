@@ -1,19 +1,24 @@
 import { ReactNode } from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
 
-const buttonTypes = [
+const buttonIntents = [
   'primary',
-  'secondary',
   'danger',
-  'text',
 ] as const
 
-export type ButtonType = typeof buttonTypes[number]
+const buttonVariants = [
+  'filled',
+  'outlined',
+] as const
+
+export type ButtonIntent = typeof buttonIntents[number]
+export type ButtonVariant = typeof buttonVariants[number]
 
 interface AppButtonProps {
   title: string,
   onPress: () => void,
-  type?: ButtonType,
+  intent?: ButtonIntent,
+  variant?: ButtonVariant,
   isDisabled?: boolean,
   leftIcon?: ReactNode,
   rightIcon?: ReactNode,

@@ -4,7 +4,7 @@ import axios from 'axios'
 import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://192.168.0.105:4000',
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
 })
 
 axiosInstance.interceptors.request.use(

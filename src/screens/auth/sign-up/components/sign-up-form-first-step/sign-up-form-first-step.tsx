@@ -122,7 +122,8 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
         <AppButton
           title='Continue'
           onPress={handleSubmit(onSubmit)}
-          type='primary'
+          intent='primary'
+          variant='filled'
           rightIcon={<ArrowRight color='#ECE8E8' />}
         />
     </>

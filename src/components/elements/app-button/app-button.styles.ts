@@ -1,62 +1,96 @@
-import { StyleSheet } from 'react-native'
+import {
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from 'react-native'
 
 import colors from '@/theme/colors/button'
-import { ButtonType } from './app-button.props'
+import { ButtonIntent, ButtonVariant } from './app-button.props'
 
 type Options = {
-  type: ButtonType
+  intent: ButtonIntent
+  variant: ButtonVariant
   isDisabled: boolean
 }
 
-const backgroundColors: Record<ButtonType, string> = {
-  primary: colors.light.primary.background,
-  secondary: colors.light.secondary.background,
-  text: colors.light.text.background,
-  danger: colors.light.danger.background,
+type ButtonColors = Record<
+    ButtonIntent,
+    Record<ButtonVariant, string>
+  >
+
+const backgroundColors: ButtonColors = {
+  primary: {
+    filled: colors.light.primary.background,
+    outlined: colors.light.secondary.background,
+  },
+  danger: {
+    filled: colors.light.danger.background,
+    outlined: colors.light.secondary.background,
+  },
 }
 
-const textColors: Record<ButtonType, string> = {
-  primary: colors.light.primary.text,
-  secondary: colors.light.secondary.text,
-  text: colors.light.text.text,
-  danger: colors.light.danger.text,
+const textColors: ButtonColors = {
+  primary: {
+    filled: colors.light.primary.text,
+    outlined: colors.light.primary.text,
+  },
+  danger: {
+    filled: colors.light.danger.text,
+    outlined: colors.light.danger.text,
+  },
 }
 
-const borderColors: Record<ButtonType, string> = {
-  primary: colors.light.primary.border,
-  secondary: colors.light.secondary.border,
-  danger: colors.light.danger.border,
-  text: colors.light.text.border,
+const borderColors: ButtonColors = {
+  primary: {
+    filled: colors.light.primary.border,
+    outlined: colors.light.primary.border,
+  },
+  danger: {
+    filled: colors.light.danger.border,
+    outlined: colors.light.danger.border,
+  },
 }
 
 const borderRadius = 32
 const borderWidth = 1.35
 
-const touchableOpacityStyles: Record<ButtonType, object> = {
+const touchableOpacityStyles: Record<
+    ButtonIntent,
+    Record<ButtonVariant, StyleProp<ViewStyle>>
+  > = {
   primary: {
-    borderRadius,
-    borderWidth,
-    borderColor: borderColors.primary,
-    backgroundColor: backgroundColors.primary,
+    filled: {
+      borderRadius,
+      borderWidth,
+      borderColor: borderColors.primary.filled,
+      backgroundColor: backgroundColors.primary.filled,
+    },
+    outlined: {
+      borderRadius,
+      borderWidth,
+      borderColor: borderColors.primary.outlined,
+      backgroundColor: backgroundColors.primary.outlined,
+    },
   },
-  secondary: {
-    borderRadius,
-    borderWidth,
-    borderColor: borderColors.secondary,
-    backgroundColor: backgroundColors.secondary,
-  },
-  text: {},
   danger: {
-    borderRadius,
-    borderWidth,
-    borderColor: borderColors.danger,
-    backgroundColor: backgroundColors.danger,
+    filled: {
+      borderRadius,
+      borderWidth,
+      borderColor: borderColors.danger.filled,
+      backgroundColor: backgroundColors.danger.filled,
+    },
+    outlined: {
+      borderRadius,
+      borderWidth,
+      borderColor: borderColors.danger.outlined,
+      backgroundColor: backgroundColors.danger.outlined,
+    },
   },
 }
 
-const styles = ({ type, isDisabled }: Options) => StyleSheet.create({
+const styles = ({ intent, variant, isDisabled }: Options) => StyleSheet.create({
   touchableOpacity: {
-    ...touchableOpacityStyles[type],
+    ...touchableOpacityStyles[intent][variant],
     position: 'relative',
     width: '100%',
     height: 60,
@@ -66,7 +100,7 @@ const styles = ({ type, isDisabled }: Options) => StyleSheet.create({
     opacity: isDisabled ? 0.5 : 1,
   },
   text: {
-    color: textColors[type],
+    color: textColors[intent][variant],
     fontSize: 16,
     flexGrow: 1,
     textAlign: 'center',

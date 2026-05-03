@@ -37,7 +37,9 @@ const IntroScreen: FC = () => {
         <AppButton
           style={styles.loginButton}
           title='Login'
-          onPress={() => {}}
+          onPress={() => {
+            router.push('/(auth)/login')
+          }}
           type='secondary'
         />
 

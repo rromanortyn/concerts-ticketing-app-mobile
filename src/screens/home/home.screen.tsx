@@ -8,18 +8,17 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View
 } from 'react-native'
 
-import { Image } from 'expo-image'
 import {
   BellIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   ChevronUpIcon,
   FilterIcon,
-  MapPinIcon,
   MenuIcon,
   SearchIcon,
 } from 'lucide-react-native'
@@ -27,6 +26,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import AppTypography from '@/components/elements/app-typography/app-typography'
 import CitySuggestion from './components/city-suggestion/city-suggestion'
+import EventCard from './components/event-card/event-card'
 
 import styles from './styles'
 
@@ -65,23 +65,27 @@ const HomeScreen: FC = () => {
   )
 
   const citiesListJsx = isCitiesListOpen ? (
-    <FlatList
-      style={stylesWithInsets.citiesList}
-      data={cities}
-      renderItem={({ item, index }) => (
-        <CitySuggestion
-          name={item.name}
-          hasDivider={index !== cities.length - 1}
-          onPress={() => {}}
+    <TouchableWithoutFeedback onPress={onCitiesToggle}>
+      <View style={stylesWithInsets.citiesListContainer}>
+        <FlatList
+          style={stylesWithInsets.citiesList}
+          data={cities}
+          renderItem={({ item, index }) => (
+            <CitySuggestion
+              name={item.name}
+              hasDivider={index !== cities.length - 1}
+              onPress={() => {}}
+            />
+          )}
+          keyExtractor={item => `${item.id}`}
         />
-      )}
-      keyExtractor={item => `${item.id}`}
-    />
+      </View>
+    </TouchableWithoutFeedback>
   ) : null
   
   return (
-    <View style={{ flex: 1, position: 'relative' }}>
-      <View style={stylesWithInsets.container}>
+    <View style={stylesWithInsets.container}>
+      <View style={stylesWithInsets.headerContainer}>
         <View style={stylesWithInsets.topContainer}>
           <MenuIcon color='#F9F9F9' size={32} />
 
@@ -100,7 +104,7 @@ const HomeScreen: FC = () => {
               <AppTypography
                 variant='subtitle'
                 style={stylesWithInsets.citySelectorSubtitle}
-                text='Select another city'
+                text='Select a city'
               />
               {citySelectorChevronJsx}
             </View>
@@ -123,59 +127,24 @@ const HomeScreen: FC = () => {
 
       {/* This empty view is required for correct layout */}
       <View>
-        <View style={{ paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <View style={stylesWithInsets.sectionHeaderContainer}>
           <AppTypography variant='h3' text='Upcoming events' />
 
-          <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <TouchableOpacity style={stylesWithInsets.seeAllButton}>
             <AppTypography variant='subtitle' text='See all' />
             <ChevronRightIcon color='#000' size={16} />
           </TouchableOpacity>
         </View>
 
-        <ScrollView horizontal contentContainerStyle={{ gap: 16, paddingHorizontal: 20 }}>
+        <ScrollView horizontal contentContainerStyle={stylesWithInsets.eventsListContainer}>
           {[1, 2, 3, 4, 5].map((item) => (
-            <View key={item} style={{
-              borderRadius: 12,
-              position: 'relative',
-              width: windowDimensions.width * 0.7,
-              padding: 20,
-              backgroundColor: '#FFF',
-            }}>
-              <Image
-                style={{
-                  width: windowDimensions.width * 0.7 - 40,
-                  height: windowDimensions.width * 0.7 - 40,
-                  borderRadius: 16,
-                  marginBottom: 20,
-                }}
-                source={{ uri: 'https://picsum.photos/seed/696/3000/2000' }}
-                contentFit='cover'
-                transition={500}
-                onError={(error) => console.log(error)}
+            <TouchableOpacity key={item} activeOpacity={0.7}>
+              <EventCard 
+                containerWidth={windowDimensions.width * 0.7} 
+                imageWidth={windowDimensions.width * 0.7 - 40}
+                imageHeight={windowDimensions.width * 0.7 - 40}
               />
-
-              <View style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 8,
-                backgroundColor: '#f9f9f9',
-                width: 70,
-                height: 70,
-                position: 'absolute',
-                top: 30,
-                left: 30,
-              }}>
-              <AppTypography variant='body' text='12' style={{ color: '#3C896D' }} />
-              <AppTypography variant='body' text='June' style={{ color: '#3C896D' }} />
-            </View>
-
-            <AppTypography variant='h3' text='Event name blablablablablablablabla' style={{ color: '#000', marginBottom: 20 }} />
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <MapPinIcon color='#999' size={24} />
-              <AppTypography variant='body' text='Kyiv, Ukraine' style={{ color: '#999' }} />
-            </View>
-          </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>

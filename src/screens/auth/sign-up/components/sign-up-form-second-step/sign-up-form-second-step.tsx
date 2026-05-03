@@ -183,7 +183,8 @@ const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
       <AppButton
         title='Go back'
         onPress={() => onGoBack(getValues('password'))}
-        type='secondary'
+        intent='primary'
+        variant='outlined'
         leftIcon={<ArrowLeft color='#3C896D' />}
         style={styles.goBackButton}
       />
@@ -191,7 +192,8 @@ const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
       <AppButton
         title='Sign up'
         onPress={handleSubmit(onSubmit)}
-        type='primary'
+        intent='primary'
+        variant='filled'
       />
     </>
   )

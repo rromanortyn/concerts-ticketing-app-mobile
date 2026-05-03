@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 
 import AppButtonProps from './app-button.props'
@@ -11,25 +11,35 @@ const AppButton: FC<AppButtonProps> = (props) => {
     leftIcon,
     rightIcon,
     style,
-    type = 'primary',
+    intent = 'primary',
+    variant = 'filled',
     isDisabled = false,
   } = props
+
+  const stylesMemo = useMemo(
+    () => styles({ intent, variant, isDisabled }),
+    [
+      intent,
+      variant,
+      isDisabled,
+    ],
+  )
 
   return (
     <TouchableOpacity
       style={[
-        styles({ type, isDisabled }).touchableOpacity,
+        stylesMemo.touchableOpacity,
         style,
       ]}
       disabled={isDisabled}
       activeOpacity={0.7}
       onPress={onPress}
     >
-      <View style={styles({ type, isDisabled }).leftIconContainer}>
+      <View style={stylesMemo.leftIconContainer}>
         {leftIcon}
       </View>
-      <Text style={styles({ type, isDisabled }).text}>{title}</Text>
-      <View style={styles({ type, isDisabled }).rightIconContainer}>
+      <Text style={stylesMemo.text}>{title}</Text>
+      <View style={stylesMemo.rightIconContainer}>
         {rightIcon}
       </View>
     </TouchableOpacity>

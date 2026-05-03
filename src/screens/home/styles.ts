@@ -10,6 +10,10 @@ interface Props {
 
 const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
   container: {
+    flex: 1,
+    position: 'relative',
+  },
+  headerContainer: {
     height: 220,
     backgroundColor: '#3C896D',
     borderBottomLeftRadius: 48,
@@ -41,16 +45,24 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
+  citiesListContainer: {
+    width: windowDimensions.width,
+    height: windowDimensions.height,
+    zIndex: 1000,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
   citiesList: {
     maxHeight: windowDimensions.height * 0.65,
-    width: windowDimensions.width * 0.8, 
-    backgroundColor: '#F9F9F9', 
-    borderRadius: 10, 
-    borderWidth: 1, 
-    borderColor: '#999', 
-    position: 'absolute', 
+    width: windowDimensions.width * 0.8,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#999',
+    position: 'absolute',
     top: 130,
-    left: windowDimensions.width * 0.1, 
+    left: windowDimensions.width * 0.1,
   },
   bottomContainer: {
     flexDirection: 'row',
@@ -66,6 +78,22 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
   },
   searchInput: {
     flex: 1,
+  },
+  sectionHeaderContainer: {
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  seeAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  eventsListContainer: {
+    gap: 16,
+    paddingHorizontal: 20,
   },
 })
 

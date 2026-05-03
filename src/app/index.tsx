@@ -1,3 +1,4 @@
+import { useFocusEffect } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
 
@@ -6,16 +7,15 @@ import { useQuery } from '@tanstack/react-query'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import axiosInstance from '@/consts/axios-instance'
-import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
-
 import HomeScreen from '@/screens/home/home.screen'
 import IntroScreen from '@/screens/intro/intro.screen'
+import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isGetMeQueryEnabled, setIsGetMeQueryEnabled] = useState<boolean>(false)
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const checkAccessToken = async () => {
       const accessToken = await AsyncStorage.getItem(AsyncStorageKey.AccessToken)
 
@@ -29,13 +29,13 @@ const Index = () => {
     }
 
     checkAccessToken()
-  }, [])
+  })
 
   const getMeQuery = useQuery({
     queryKey: ['me'],
     queryFn: async () => {
       const response = await axiosInstance.get('/me')
-      console.log(response.data)
+
       return response.data
     },
     enabled: isGetMeQueryEnabled,
