@@ -27,6 +27,7 @@ import getErrorMessageJsx from '@/utils/get-error-message-jsx'
 import type { SignUpSecondStepSchema } from './consts/sign-up-second-step-schema'
 import signUpSecondStepSchema from './consts/sign-up-second-step-schema'
 
+import AppTypography from '@/components/elements/app-typography/app-typography'
 import styles from './styles'
 
 interface SignUpFormSecondStepProps {
@@ -117,8 +118,11 @@ const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
     <>
       <View style={styles.bottomContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Create Password</Text>
-          <Text style={styles.titleUp}></Text>
+          <AppTypography
+            style={styles.title}
+            variant='h1'
+            text='Create Password'
+          />
         </View>
 
         <Controller
@@ -129,7 +133,11 @@ const SignUpFormSecondStep: FC<SignUpFormSecondStepProps> = (props) => {
             fieldState: { error },
           }) => (
             <View style={styles.formFieldContainer}>
-              <Text style={styles.formFieldLabel}>Password</Text>
+              <AppTypography
+                style={styles.formFieldLabel}
+                variant='body'
+                text='Password'
+              />
               <AppTextField
                 ref={passwordInputRef}
                 containerStyle={styles.formFieldInput}

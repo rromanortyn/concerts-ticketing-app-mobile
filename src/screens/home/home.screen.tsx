@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import {
-  Pressable,
   TextInput,
+  TouchableOpacity,
   View
 } from 'react-native'
 
@@ -27,7 +27,7 @@ const HomeScreen: FC = () => {
       <View style={stylesWithInsets.topContainer}>
         <MenuIcon color='#F9F9F9' size={32} />
 
-        <Pressable style={stylesWithInsets.locationPressableContainer}>
+        <TouchableOpacity style={stylesWithInsets.locationPressableContainer} activeOpacity={0.7}>
           <View style={stylesWithInsets.locationTopContainer}>
             <AppTypography
               variant='subtitle'
@@ -42,7 +42,7 @@ const HomeScreen: FC = () => {
             style={stylesWithInsets.locationH3}
             text='Kyiv'
           />
-        </Pressable>
+        </TouchableOpacity>
         
         <BellIcon color='#F9F9F9' size={32} />
       </View>

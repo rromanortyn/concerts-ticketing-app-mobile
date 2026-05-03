@@ -17,10 +17,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: 'Montserrat',
     textAlign: 'center',
-    fontWeight: '700',
-    fontSize: 22,
     marginRight: 4,
     marginBottom: 20,
   },

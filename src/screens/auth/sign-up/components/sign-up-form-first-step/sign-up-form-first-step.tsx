@@ -1,11 +1,8 @@
 import { FC, useRef } from 'react'
 import {
-  Text,
   TextInput,
-  View,
+  View
 } from 'react-native'
-
-import { Controller, useForm } from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -13,21 +10,15 @@ import {
   AtSign,
   UserRound,
 } from 'lucide-react-native'
-import z from 'zod'
+import { Controller, useForm } from 'react-hook-form'
 
 import AppButton from '@/components/elements/app-button/app-button'
 import AppTextField from '@/components/elements/app-text-field/app-text-field'
-
+import AppTypography from '@/components/elements/app-typography/app-typography'
 import getErrorMessageJsx from '@/utils/get-error-message-jsx'
-import styles from './styles'
+import signUpFirstStepSchema from './consts/sign-up-first-step-schema'
 
-const signUpFirstStepSchema = z.object({
-  fullName: z
-    .string()
-    .min(1, 'Full name is required'),
-  email: z
-    .email('Invalid email'),
-})
+import styles from './styles'
 
 interface SignUpFirstStepState {
   fullName: string,
@@ -61,7 +52,11 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
     <>
       <View style={styles.bottomContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Sign Up</Text>
+          <AppTypography
+            style={styles.title}
+            variant='h1'
+            text='Sign Up'
+          />
         </View>
 
          <Controller
@@ -72,7 +67,11 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
               fieldState: { error },
             }) => (
               <View style={styles.formFieldContainer}>
-                <Text style={styles.formFieldLabel}>Full name</Text>
+                <AppTypography
+                  style={styles.formFieldLabel}
+                  variant='body'
+                  text='Full name'
+                />
                 <AppTextField
                   ref={fullNameInputRef}
                   containerStyle={styles.formFieldInput}
@@ -97,7 +96,11 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
               fieldState: { error },
             }) => (
               <View style={styles.formFieldContainer}>
-                <Text style={styles.formFieldLabel}>Email</Text>
+                <AppTypography
+                  style={styles.formFieldLabel}
+                  variant='body'
+                  text='Email'
+                />
                 <AppTextField
                   ref={emailInputRef}
                   containerStyle={styles.formFieldInput}

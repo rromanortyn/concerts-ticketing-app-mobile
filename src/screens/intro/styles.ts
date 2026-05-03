@@ -13,15 +13,11 @@ const styles = StyleSheet.create({
     marginBottom: 35,
   },
   title: {
-    fontFamily: 'Montserrat',
-    textAlign: 'center',
-    fontWeight: '700',
-    fontSize: 22,
     marginBottom: 12,
+    textAlign: 'center',
   },
   subtitle: {
     textAlign: 'center',
-    fontSize: 16,
   },
   createAnAccountButton: {
     marginBottom: 20,

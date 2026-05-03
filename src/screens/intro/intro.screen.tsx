@@ -4,6 +4,7 @@ import { Text, View } from 'react-native'
 import { Link, useRouter } from 'expo-router'
 
 import AppButton from '@/components/elements/app-button/app-button'
+import AppTypography from '@/components/elements/app-typography/app-typography'
 
 import styles from './styles'
 
@@ -13,8 +14,16 @@ const IntroScreen: FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
-        <Text style={styles.title}>Welcome to EventJoy</Text>
-        <Text style={styles.subtitle}>Create an account and experience seamless event planning.</Text>
+        <AppTypography
+          style={styles.title}
+          variant='h1'
+          text='Welcome to EventJoy'
+        />
+        <AppTypography
+          style={styles.subtitle}
+          variant='subtitle'
+          text='Create an account and experience seamless event planning.'
+        />
       </View>
 
       <View style={styles.bottomContainer}>
