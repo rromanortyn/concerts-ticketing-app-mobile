@@ -112,7 +112,8 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
     paddingHorizontal: 20,
   },
   filtersSheetContainer: {
-    height: windowDimensions.height * 0.5,
+    maxHeight: windowDimensions.height - topInset,
+    minHeight: windowDimensions.height * 0.5,
     backgroundColor: '#F9F9F9',
     paddingTop: 16,
   },

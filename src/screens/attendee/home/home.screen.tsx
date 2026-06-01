@@ -390,7 +390,6 @@ const HomeScreen: FC = () => {
           <ModalBottomSheet
             onDismissRequest={onFiltersDismiss}
             skipPartiallyExpanded={false}
-            sheetGesturesEnabled={false}
             showDragHandle
             containerColor='#F9F9F9'
           >
