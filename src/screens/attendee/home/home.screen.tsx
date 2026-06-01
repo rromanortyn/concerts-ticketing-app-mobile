@@ -269,14 +269,37 @@ const HomeScreen: FC = () => {
     </TouchableWithoutFeedback>
   ) : null
 
-  const datePickerJsx = activeDatePickerField ? (
-    <DateTimePicker
-      mode='date'
-      value={filters.customDates[activeDatePickerField] ?? new Date()}
-      display='default'
-      onChange={onCustomDateChange}
-    />
-  ) : null
+  const customDatesJsx = (
+    <View style={stylesWithInsets.customDatesContainer}>
+      {(['from', 'to'] as const).map((field) => (
+        <TouchableOpacity
+          key={field}
+          style={stylesWithInsets.customDateButton}
+          activeOpacity={0.7}
+          onPress={() => setActiveDatePickerField(field)}
+        >
+          <AppTypography
+            variant='subtitle'
+            style={stylesWithInsets.customDateLabel}
+            text={field === 'from' ? 'From date' : 'To date'}
+          />
+          <AppTypography
+            variant='subtitle'
+            text={formatDate(filters.customDates[field])}
+          />
+        </TouchableOpacity>
+      ))}
+
+      {activeDatePickerField ? (
+        <DateTimePicker
+          mode='date'
+          value={filters.customDates[activeDatePickerField] ?? new Date()}
+          display='default'
+          onChange={onCustomDateChange}
+        />
+      ) : null}
+    </View>
+  )
 
   return (
     <>
@@ -367,6 +390,7 @@ const HomeScreen: FC = () => {
           <ModalBottomSheet
             onDismissRequest={onFiltersDismiss}
             skipPartiallyExpanded={false}
+            sheetGesturesEnabled={false}
             showDragHandle
             containerColor='#F9F9F9'
           >
@@ -384,7 +408,9 @@ const HomeScreen: FC = () => {
                 <ScrollView
                   style={stylesWithInsets.filtersScrollView}
                   contentContainerStyle={stylesWithInsets.filtersScrollContent}
+                  nestedScrollEnabled
                   showsVerticalScrollIndicator={true}
+                  keyboardShouldPersistTaps='handled'
                 >
                   <View style={stylesWithInsets.filterSection}>
                     <AppTypography variant='h3' text='Dates' />
@@ -415,29 +441,7 @@ const HomeScreen: FC = () => {
                       })}
                     </View>
 
-                    {filters.date === 'Custom dates' ? (
-                      <View style={stylesWithInsets.customDatesContainer}>
-                        {(['from', 'to'] as const).map((field) => (
-                          <TouchableOpacity
-                            key={field}
-                            style={stylesWithInsets.customDateButton}
-                            activeOpacity={0.7}
-                            onPress={() => setActiveDatePickerField(field)}
-                          >
-                            <AppTypography
-                              variant='subtitle'
-                              style={stylesWithInsets.customDateLabel}
-                              text={field === 'from' ? 'From' : 'To'}
-                            />
-                            <AppTypography
-                              variant='subtitle'
-                              text={formatDate(filters.customDates[field])}
-                            />
-                          </TouchableOpacity>
-                        ))}
-                        {datePickerJsx}
-                      </View>
-                    ) : null}
+                    {customDatesJsx}
                   </View>
 
                   <View style={stylesWithInsets.filterSection}>
