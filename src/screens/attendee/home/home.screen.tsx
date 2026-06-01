@@ -15,7 +15,11 @@ import {
   View
 } from 'react-native'
 
-import { Host, ModalBottomSheet, RNHostView } from '@expo/ui/jetpack-compose'
+import {
+  Host,
+  ModalBottomSheet,
+  RNHostView,
+} from '@expo/ui/jetpack-compose'
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import {
   BellIcon,
@@ -385,16 +389,15 @@ const HomeScreen: FC = () => {
         </View>
       </View>
 
-      <Host matchContents>
+      <Host>
         {isFiltersSheetOpen && Platform.OS === 'android' ? (
           <ModalBottomSheet
             onDismissRequest={onFiltersDismiss}
-            skipPartiallyExpanded={false}
-            sheetGesturesEnabled={false}
+            skipPartiallyExpanded
             showDragHandle
             containerColor='#F9F9F9'
           >
-            <RNHostView matchContents>
+            <RNHostView>
               <View style={stylesWithInsets.filtersSheetContainer}>
                 <View style={stylesWithInsets.filtersSheetHeader}>
                   <AppTypography variant='h2' text='Filters' />

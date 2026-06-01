@@ -112,9 +112,9 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
     paddingHorizontal: 20,
   },
   filtersSheetContainer: {
-    height: windowDimensions.height * 0.5,
     backgroundColor: '#F9F9F9',
     paddingTop: 16,
+    flex: 1,
   },
   filtersSheetHeader: {
     paddingHorizontal: 20,
@@ -200,7 +200,7 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
   filtersFooter: {
     paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: bottomInset + 16,
+    paddingBottom: bottomInset,
     borderTopWidth: 1,
     borderTopColor: '#E6E6E6',
     backgroundColor: '#F9F9F9',
