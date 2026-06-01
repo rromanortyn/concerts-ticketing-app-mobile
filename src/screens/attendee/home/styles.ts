@@ -112,9 +112,7 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
     paddingHorizontal: 20,
   },
   filtersSheetContainer: {
-    flex: 1,
-    minHeight: windowDimensions.height * 0.55,
-    maxHeight: windowDimensions.height * 0.88,
+    height: windowDimensions.height * 0.5,
     backgroundColor: '#F9F9F9',
     paddingTop: 16,
   },
@@ -132,6 +130,7 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
     flex: 1,
   },
   filtersScrollContent: {
+    flexGrow: 1,
     gap: 24,
     paddingHorizontal: 20,
     paddingTop: 20,
