@@ -6,7 +6,6 @@ import { useRouter } from 'expo-router'
 
 import axiosInstance from '@/consts/axios-instance'
 import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
-import useAuthStore from '@/zustand/auth.store'
 import LoginForm from './components/login-form/login-form'
 
 interface LoginRequestDto {
@@ -16,22 +15,15 @@ interface LoginRequestDto {
 
 const LoginScreen: FC = () => {
   const router = useRouter()
-  const { setUser } = useAuthStore()
-
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequestDto) => {
       const response = await axiosInstance.post('/auth/login', data)
-      console.log(response)
       return response.data
     },
-    onSuccess: async (data) => {console.log(data)
+    onSuccess: async (data) => {
       await AsyncStorage.setItem(AsyncStorageKey.AccessToken, data.accessToken)
 
-      const getMeResponse = await axiosInstance.get('/me')
-      setUser(getMeResponse.data)
-
-      router.dismissAll()
-      router.replace('/')
+      router.push('/')
     },
     onError: (error) => {
       console.log(error)
@@ -40,7 +32,6 @@ const LoginScreen: FC = () => {
 
   const onSubmit = async (dto: LoginRequestDto) => {
     await loginMutation.mutateAsync(dto)
-    console.log('submit finished')
   }
 
   return (

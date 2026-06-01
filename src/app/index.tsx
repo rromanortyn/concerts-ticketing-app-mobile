@@ -1,65 +1,107 @@
-import { useFocusEffect } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useFocusEffect, useRouter } from 'expo-router'
+import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery } from '@tanstack/react-query'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 import axiosInstance from '@/consts/axios-instance'
-import HomeScreen from '@/screens/home/home.screen'
-import IntroScreen from '@/screens/intro/intro.screen'
 import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
+import useAuthStore from '@/zustand/auth.store'
 
 const Index = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [isGetMeQueryEnabled, setIsGetMeQueryEnabled] = useState<boolean>(false)
+  const router = useRouter()
+  const { clearUser, setUser } = useAuthStore()
+  const [accessToken, setAccessToken] = useState<string | null>(null)
+  const [isCheckingAccessToken, setIsCheckingAccessToken] = useState<boolean>(true)
 
-  useFocusEffect(() => {
-    const checkAccessToken = async () => {
-      const accessToken = await AsyncStorage.getItem(AsyncStorageKey.AccessToken)
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true
 
-      if (accessToken) {
-        setIsGetMeQueryEnabled(true)
+      const checkAccessToken = async () => {
+        setIsCheckingAccessToken(true)
+
+        try {
+          const storedAccessToken = await AsyncStorage.getItem(AsyncStorageKey.AccessToken)
+
+          if (!isActive) {
+            return
+          }
+
+          if (!storedAccessToken) {
+            setAccessToken(null)
+            clearUser()
+            setIsCheckingAccessToken(false)
+            router.replace('/intro')
+            return
+          }
+
+          setAccessToken(storedAccessToken)
+          setIsCheckingAccessToken(false)
+        }
+        catch (error) {
+          console.log(error)
+
+          if (!isActive) {
+            return
+          }
+
+          setAccessToken(null)
+          clearUser()
+          setIsCheckingAccessToken(false)
+          router.replace('/intro')
+        }
       }
 
-      else {
-        setIsLoading(false)
-      }
-    }
+      checkAccessToken()
 
-    checkAccessToken()
-  })
+      return () => {
+        isActive = false
+      }
+    }, [clearUser, router])
+  )
 
   const getMeQuery = useQuery({
-    queryKey: ['me'],
+    queryKey: ['me', accessToken],
     queryFn: async () => {
       const response = await axiosInstance.get('/me')
 
       return response.data
     },
-    enabled: isGetMeQueryEnabled,
+    enabled: Boolean(accessToken),
   })
 
   useEffect(() => {
-    if (getMeQuery.isSuccess || getMeQuery.isError) {
-      setIsLoading(false)
+    if (!getMeQuery.data) {
+      return
     }
-  }, [getMeQuery.isSuccess, getMeQuery.isError])
 
-  if (isLoading) {
+    setUser(getMeQuery.data)
+    router.dismissAll()
+    router.push('/attendee')
+  }, [getMeQuery.data, router, setUser])
+
+  useEffect(() => {
+    if (!getMeQuery.isError) {
+      return
+    }
+
+    const redirectToIntro = async () => {
+      await AsyncStorage.removeItem(AsyncStorageKey.AccessToken)
+      setAccessToken(null)
+      clearUser()
+      router.replace('/intro')
+    }
+
+    redirectToIntro()
+  }, [clearUser, getMeQuery.isError, router])
+
+  if (isCheckingAccessToken || getMeQuery.isFetching) {
     return <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' />
   }
 
-  return (
-    <>
-      {getMeQuery.data ? <HomeScreen /> : (
-        <SafeAreaView style={{ height: '100%', paddingHorizontal: 20 }}>
-          <IntroScreen />
-        </SafeAreaView>
-      )}
-    </>
-  )
+  return <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' />
 }
 
 export default Index

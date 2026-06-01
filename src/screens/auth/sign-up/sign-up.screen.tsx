@@ -36,8 +36,7 @@ const SignUpScreen: FC = () => {
     onSuccess: async (data) => {
       await AsyncStorage.setItem(AsyncStorageKey.AccessToken, data.accessToken)
 
-      router.dismissAll()
-      router.replace('/')
+      router.push('/')
     },
     onError: (error) => {
       console.log(error)
