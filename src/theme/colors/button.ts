@@ -19,10 +19,10 @@ const light = {
     text: '#ECE8E8',
     border: 'transparent',
   },
-}
+} as const
 
 const colors = {
   light,
-}
+} as const
 
 export default colors

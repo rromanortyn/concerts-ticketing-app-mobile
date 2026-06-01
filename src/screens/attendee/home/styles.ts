@@ -14,7 +14,7 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     position: 'relative',
   },
   headerContainer: {
-    height: 220,
+    height: 200,
     backgroundColor: '#3C896D',
     borderBottomLeftRadius: 48,
     borderBottomRightRadius: 48,
@@ -26,24 +26,20 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: 24,
+    marginBottom: 32,
   },
   citySelectorPressableContainer: {
-    alignItems: 'center',
-    gap: 4,
-  },
-  citySelectorTopContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  citySelectorSubtitle: {
-    marginRight: 4,
-    textAlign: 'center',
-    color: 'white',
+    gap: 4,
   },
   citySelectorH3: {
     textAlign: 'center',
     color: 'white',
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    gap: 16,
   },
   citiesListContainer: {
     width: windowDimensions.width,
@@ -61,8 +57,8 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     borderWidth: 1,
     borderColor: '#999',
     position: 'absolute',
-    top: 130,
-    left: windowDimensions.width * 0.1,
+    top: 120,
+    left: 20,
   },
   bottomContainer: {
     flexDirection: 'row',
@@ -78,6 +74,7 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
   },
   searchInput: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   sectionHeaderContainer: {
     paddingHorizontal: 20,

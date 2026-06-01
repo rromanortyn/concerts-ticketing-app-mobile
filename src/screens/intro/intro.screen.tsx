@@ -40,6 +40,7 @@ const IntroScreen: FC = () => {
           onPress={() => {
             router.push('/(auth)/login')
           }}
+          intent='primary'
           variant='outlined'
         />
 

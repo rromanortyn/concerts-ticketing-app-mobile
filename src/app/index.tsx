@@ -11,17 +11,15 @@ import useAuthStore from '@/zustand/auth.store'
 
 const Index = () => {
   const router = useRouter()
+
   const { clearUser, setUser } = useAuthStore()
   const [accessToken, setAccessToken] = useState<string | null>(null)
-  const [isCheckingAccessToken, setIsCheckingAccessToken] = useState<boolean>(true)
 
   useFocusEffect(
     useCallback(() => {
       let isActive = true
 
       const checkAccessToken = async () => {
-        setIsCheckingAccessToken(true)
-
         try {
           const storedAccessToken = await AsyncStorage.getItem(AsyncStorageKey.AccessToken)
 
@@ -32,13 +30,13 @@ const Index = () => {
           if (!storedAccessToken) {
             setAccessToken(null)
             clearUser()
-            setIsCheckingAccessToken(false)
+
             router.replace('/intro')
+  
             return
           }
 
           setAccessToken(storedAccessToken)
-          setIsCheckingAccessToken(false)
         }
         catch (error) {
           console.log(error)
@@ -49,7 +47,7 @@ const Index = () => {
 
           setAccessToken(null)
           clearUser()
-          setIsCheckingAccessToken(false)
+
           router.replace('/intro')
         }
       }
@@ -78,6 +76,7 @@ const Index = () => {
     }
 
     setUser(getMeQuery.data)
+
     router.dismissAll()
     router.push('/attendee')
   }, [getMeQuery.data, router, setUser])
@@ -96,10 +95,6 @@ const Index = () => {
 
     redirectToIntro()
   }, [clearUser, getMeQuery.isError, router])
-
-  if (isCheckingAccessToken || getMeQuery.isFetching) {
-    return <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' />
-  }
 
   return <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' />
 }

@@ -4,7 +4,6 @@ import {
   ViewStyle,
 } from 'react-native'
 
-import colors from '@/theme/colors/button'
 import { ButtonIntent, ButtonVariant } from './app-button.props'
 
 type Options = {
@@ -20,34 +19,34 @@ type ButtonColors = Record<
 
 const backgroundColors: ButtonColors = {
   primary: {
-    filled: colors.light.primary.background,
-    outlined: colors.light.secondary.background,
+    filled: '#3C896D',
+    outlined: '#F7F7F8',
   },
   danger: {
-    filled: colors.light.danger.background,
-    outlined: colors.light.secondary.background,
+    filled: '#8f1322',
+    outlined: '#F7F7F8',
   },
 }
 
 const textColors: ButtonColors = {
   primary: {
-    filled: colors.light.primary.text,
-    outlined: colors.light.primary.text,
+    filled: '#ECE8E8',
+    outlined: '#3C896D',
   },
   danger: {
-    filled: colors.light.danger.text,
-    outlined: colors.light.danger.text,
+    filled: '#ECE8E8',
+    outlined: '#8F1322',
   },
 }
 
 const borderColors: ButtonColors = {
   primary: {
-    filled: colors.light.primary.border,
-    outlined: colors.light.primary.border,
+    filled: '#3C896D',
+    outlined: '#3C896D',
   },
   danger: {
-    filled: colors.light.danger.border,
-    outlined: colors.light.danger.border,
+    filled: '#8F1322',
+    outlined: '#8F1322',
   },
 }
 

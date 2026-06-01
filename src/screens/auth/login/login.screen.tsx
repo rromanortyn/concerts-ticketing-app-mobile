@@ -15,9 +15,11 @@ interface LoginRequestDto {
 
 const LoginScreen: FC = () => {
   const router = useRouter()
+
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequestDto) => {
       const response = await axiosInstance.post('/auth/login', data)
+
       return response.data
     },
     onSuccess: async (data) => {

@@ -43,8 +43,6 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
   const {
     control,
     handleSubmit,
-    getValues,
-    trigger,
   } = useForm<SignUpFirstStepState>({
     mode: 'onBlur',
     defaultValues: defaultValues || {

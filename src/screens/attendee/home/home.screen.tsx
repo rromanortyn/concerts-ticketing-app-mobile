@@ -1,6 +1,7 @@
 import {
   FC,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import {
@@ -15,12 +16,12 @@ import {
 
 import {
   BellIcon,
+  BookmarkIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   ChevronUpIcon,
   FilterIcon,
-  MenuIcon,
-  SearchIcon,
+  SearchIcon
 } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -28,6 +29,7 @@ import AppTypography from '@/components/elements/app-typography/app-typography'
 import CitySuggestion from './components/city-suggestion/city-suggestion'
 import EventCard from './components/event-card/event-card'
 
+import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import styles from './styles'
 
 const cities = [
@@ -43,11 +45,19 @@ const cities = [
   { id: 10, name: 'Odesa' },
 ]
 
-const HomeScreen: FC = () => {
-  const [isCitiesListOpen, setIsCitiesListOpen] = useState<boolean>(false)
+const searchInputPlaceholderColors = {
+  default: '#F9F9F9',
+  focused: '#d4d4d4',
+}
 
+const HomeScreen: FC = () => {
   const windowDimensions = useWindowDimensions()
   const insets = useSafeAreaInsets()
+
+  const [isCitiesListOpen, setIsCitiesListOpen] = useState<boolean>(false)
+  const [search, setSearch] = useState<string>('')
+
+  const searchInputRef = useRef<TextInput>(null)
 
   const stylesWithInsets = useMemo(() => styles({
     topInset: insets.top,
@@ -56,6 +66,10 @@ const HomeScreen: FC = () => {
 
   const onCitiesToggle = () => {
     setIsCitiesListOpen((prev) => !prev)
+  }
+
+  const onSearchChange = (value: string) => {
+    setSearch(value)
   }
   
   const citySelectorChevronJsx = isCitiesListOpen ? (
@@ -87,8 +101,6 @@ const HomeScreen: FC = () => {
     <View style={stylesWithInsets.container}>
       <View style={stylesWithInsets.headerContainer}>
         <View style={stylesWithInsets.topContainer}>
-          <MenuIcon color='#F9F9F9' size={32} />
-
           <TouchableOpacity
             style={stylesWithInsets.citySelectorPressableContainer}
             activeOpacity={0.7}
@@ -97,26 +109,37 @@ const HomeScreen: FC = () => {
             <AppTypography
               variant='h3'
               style={stylesWithInsets.citySelectorH3}
-              text='Kyiv'
+              text='Kyiv, Ukraine'
             />
 
-            <View style={stylesWithInsets.citySelectorTopContainer}>
-              <AppTypography
-                variant='subtitle'
-                style={stylesWithInsets.citySelectorSubtitle}
-                text='Select a city'
-              />
-              {citySelectorChevronJsx}
-            </View>
+            {citySelectorChevronJsx}
           </TouchableOpacity>
           
-          <BellIcon color='#F9F9F9' size={32} />
+          <View style={stylesWithInsets.rightContainer}>
+            <BookmarkIcon color='#F9F9F9' size={32} />
+            <BellIcon color='#F9F9F9' size={32} />
+          </View>
         </View>
 
         <View style={stylesWithInsets.bottomContainer}>
           <View style={stylesWithInsets.searchContainer}>
-            <SearchIcon color='#F9F9F9' size={32} />
-            <TextInput placeholder='Search...' style={stylesWithInsets.searchInput} />
+            <AppTextField
+              ref={searchInputRef}
+              containerStyle={stylesWithInsets.searchInput}
+              placeholder='Search...'
+              placeholderColors={searchInputPlaceholderColors}
+              value={search}
+              autoComplete='off'
+              inputMode='text'
+              leftAdornment={(isFocused) => {
+                const color = isFocused ? searchInputPlaceholderColors.focused : searchInputPlaceholderColors.default
+
+                return (
+                  <SearchIcon color={color} size={32} />
+                )
+              }}
+              onChangeText={onSearchChange}
+            />
           </View>
 
           <FilterIcon color='#F9F9F9' size={32} />

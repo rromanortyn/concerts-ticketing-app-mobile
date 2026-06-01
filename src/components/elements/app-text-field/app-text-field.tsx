@@ -24,6 +24,10 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
     autoCapitalize = 'none',
     autoComplete = 'off',
     inputMode = 'text',
+    placeholderColors = {
+      default: '#605E5E',
+      focused: '#AFAFAF',
+    },
     containerStyle,
     leftAdornment,
     rightAdornment,
@@ -55,7 +59,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
         style={[styles.container, containerStyle]}
       >
         <View style={styles.leftAdornmentContainer}>
-          {leftAdornment}
+          {typeof leftAdornment === 'function' ? leftAdornment(isFocused) : leftAdornment}
         </View>
         <TextInput
           ref={ref}
@@ -65,7 +69,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
           editable={!isDisabled}
           value={value}
           placeholder={placeholder}
-          placeholderTextColor={isFocused ? '#AFAFAF' : '#605e5e'}
+          placeholderTextColor={isFocused ? placeholderColors.focused : placeholderColors.default}
           autoCorrect={false}
           autoCapitalize={autoCapitalize}
           autoComplete={autoComplete}

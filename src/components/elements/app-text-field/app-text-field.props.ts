@@ -13,7 +13,11 @@ interface AppTextFieldProps {
   autoCapitalize?: TextInputProps['autoCapitalize'],
   autoComplete?: TextInputProps['autoComplete'],
   inputMode?: TextInputProps['inputMode'],
-  leftAdornment?: ReactNode,
+  placeholderColors?: {
+    default: string,
+    focused: string,
+  },
+  leftAdornment?: ReactNode | ((isFocused: boolean) => ReactNode),
   rightAdornment?: ReactNode,
 }
 
