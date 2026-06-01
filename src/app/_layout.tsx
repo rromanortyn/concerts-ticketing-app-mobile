@@ -28,7 +28,6 @@ const RootLayout = () => {
   const theme = colorScheme === 'dark' ? DarkTheme : DefaultTheme
 
   const { user } = useAuthStore()
-console.log(user)
   return (
     <ThemeProvider value={{
       ...theme,
@@ -54,6 +53,7 @@ console.log(user)
                     then it will be possible to toggle Drawer from the burger icon
                   */}
                   <Stack.Screen name='index' options={{ headerShown: false }} />
+                  <Stack.Screen name='intro' options={{ headerShown: false }} />
                   <Stack.Screen name='(auth)/sign-up' options={{ headerShown: false }} />
                   <Stack.Screen name='(auth)/login' options={{ headerShown: false }} />
                   <Stack.Screen name='storybook' options={{ headerShown: false }} />
