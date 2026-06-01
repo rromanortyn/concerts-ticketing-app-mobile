@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.29.0",
+    "@expo/ui": "~55.0.16",
     "@gorhom/bottom-sheet": "^5.2.12",
     "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "2.1.1",
