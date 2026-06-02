@@ -111,13 +111,27 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
     gap: 16,
     paddingHorizontal: 20,
   },
-  filtersSheetContainer: {
+  filtersSheetOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1000,
+  },
+  filtersSheetBackground: {
     backgroundColor: '#F9F9F9',
-    paddingTop: 16,
+  },
+  filtersSheetHandleIndicator: {
+    backgroundColor: '#BDBDBD',
+  },
+  filtersScrollView: {
     flex: 1,
+    backgroundColor: '#F9F9F9',
+  },
+  filtersScrollContent: {
+    gap: 24,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 120,
   },
   filtersSheetHeader: {
-    paddingHorizontal: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E6E6E6',
@@ -125,16 +139,6 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
   filtersSheetSubtitle: {
     color: '#666',
     marginTop: 4,
-  },
-  filtersScrollView: {
-    flex: 1,
-  },
-  filtersScrollContent: {
-    flexGrow: 1,
-    gap: 24,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 24,
   },
   filterSection: {
     gap: 12,
@@ -200,7 +204,7 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
   filtersFooter: {
     paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: bottomInset,
+    paddingBottom: 12,
     borderTopWidth: 1,
     borderTopColor: '#E6E6E6',
     backgroundColor: '#F9F9F9',
