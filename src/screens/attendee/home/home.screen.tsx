@@ -1,5 +1,4 @@
 import {
-  Activity,
   FC,
   useMemo,
   useRef,
@@ -122,43 +121,6 @@ const venues = [
 const searchInputPlaceholderColors = {
   default: '#F9F9F9',
   focused: '#d4d4d4',
-}
-
-type DateFilter = typeof dateFilters[number]
-type Genre = typeof genres[number]
-type Venue = typeof venues[number]
-type CustomDateField = 'from' | 'to'
-
-interface FiltersState {
-  date: DateFilter | null,
-  genres: Genre[],
-  venues: Venue[],
-  customDates: {
-    from: Date | null,
-    to: Date | null,
-  },
-}
-
-const initialFiltersState: FiltersState = {
-  date: null,
-  genres: [],
-  venues: [],
-  customDates: {
-    from: null,
-    to: null,
-  },
-}
-
-const formatDate = (date: Date | null): string => {
-  if (!date) {
-    return 'Select date'
-  }
-
-  return new Intl.DateTimeFormat('en', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(date)
 }
 
 const HomeScreen: FC = () => {
@@ -321,18 +283,16 @@ const HomeScreen: FC = () => {
         </View>
       </View>
 
-      {Platform.OS === 'android' ? (
-        <Activity mode={isFiltersSheetOpen ? 'visible' : 'hidden'}>
-          <View style={stylesWithInsets.filtersSheetOverlay}>
-            <EventsFilterBottomSheet
-              genres={genres}
-              venues={venues}
-              isVisible={isFiltersSheetOpen}
-              onApply={onFiltersApply}
-              onDismiss={onFiltersDismiss}
-            />
-          </View>
-        </Activity>
+      {isFiltersSheetOpen && Platform.OS === 'android' ? (
+        <View style={stylesWithInsets.filtersSheetOverlay}>
+          <EventsFilterBottomSheet
+            genres={genres}
+            venues={venues}
+            isVisible={isFiltersSheetOpen}
+            onApply={onFiltersApply}
+            onDismiss={onFiltersDismiss}
+          />
+        </View>
       ) : null}
     </>
   )

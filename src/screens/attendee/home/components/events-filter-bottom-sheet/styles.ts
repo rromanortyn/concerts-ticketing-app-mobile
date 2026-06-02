@@ -170,7 +170,8 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     color: '#666',
   },
   venuesList: {
-    gap: 14,
+    gap: 16,
+    marginBottom: 16,
   },
   venueRow: {
     flexDirection: 'row',
