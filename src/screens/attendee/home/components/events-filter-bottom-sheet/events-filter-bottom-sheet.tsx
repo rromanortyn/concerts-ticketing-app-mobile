@@ -1,7 +1,9 @@
 import {
   FC,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useState
 } from 'react'
 import {
@@ -38,7 +40,7 @@ type DateFilter = typeof dateFilters[number]
 type Venue = string
 type CustomDateField = 'from' | 'to'
 
-interface FiltersState {
+export interface EventsFiltersState {
   date: DateFilter | null,
   genres: number[],
   venues: number[],
@@ -48,7 +50,7 @@ interface FiltersState {
   },
 }
 
-const initialFiltersState: FiltersState = {
+const initialFiltersState: EventsFiltersState = {
   date: null,
   genres: [],
   venues: [],
@@ -73,6 +75,8 @@ const formatDate = (date: Date | null): string => {
 interface EventsFilterBottomSheetProps {
   genres: { id: number, name: string }[],
   venues: { id: number, name: string }[],
+  isVisible: boolean,
+  onApply: (values: EventsFiltersState, isChanged: boolean) => void,
   onDismiss: () => void,
 }
 
@@ -80,14 +84,17 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
   const {
     genres,
     venues,
+    isVisible,
+    onApply,
     onDismiss,
   } = props
 
   const windowDimensions = useWindowDimensions()
   const insets = useSafeAreaInsets()
 
-  const [filters, setFilters] = useState<FiltersState>(initialFiltersState)
-  const [hasFilterBadge, setHasFilterBadge] = useState<boolean>(false)
+  const bottomSheetRef = useRef<BottomSheet>(null)
+
+  const [filters, setFilters] = useState<EventsFiltersState>(initialFiltersState)
   const [activeDatePickerField, setActiveDatePickerField] = useState<CustomDateField | null>(null)
 
   const stylesWithInsets = useMemo(() => styles({
@@ -99,12 +106,39 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
     insets.top,
     windowDimensions,
   ])
-  
+
   const filtersSheetSnapPoints = useMemo(() => ['100%'], [])
+
+  const isFiltersChanged = useCallback((values: EventsFiltersState) => (
+    Boolean(
+      values.date
+      || values.genres.length
+      || values.venues.length
+      || values.customDates.from
+      || values.customDates.to,
+    )
+  ), [])
+
+  useEffect(() => {
+    if (isVisible) {
+      bottomSheetRef.current?.snapToIndex(0)
+    }
+  }, [isVisible])
+
+  const onApplyFilters = useCallback(() => {
+    const isChanged = isFiltersChanged(filters)
+
+    onApply(filters, isChanged)
+    onDismiss()
+  }, [
+    filters,
+    isFiltersChanged,
+    onApply,
+    onDismiss,
+  ])
 
   const onResetFilters = () => {
     setFilters(initialFiltersState)
-    setHasFilterBadge(false)
     setActiveDatePickerField(null)
   }
 
@@ -186,13 +220,13 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
           <AppButton
             title='Apply'
             variant='filled'
-            onPress={() => {}}
+            onPress={onApplyFilters}
           />
         </View>
       </BottomSheetFooter>
     ),
     [
-      insets.bottom,
+      onApplyFilters,
       onResetFilters,
       stylesWithInsets.filtersFooter,
     ],
@@ -233,130 +267,131 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
 
   return (
     <BottomSheet
-            index={0}
-            snapPoints={filtersSheetSnapPoints}
-            enableDynamicSizing={false}
-            enablePanDownToClose
-            backdropComponent={renderFiltersSheetBackdrop}
-            footerComponent={renderFiltersSheetFooter}
-            backgroundStyle={stylesWithInsets.filtersSheetBackground}
-            handleIndicatorStyle={stylesWithInsets.filtersSheetHandleIndicator}
-            topInset={insets.top}
-            onClose={onDismiss}
-          >
-            <BottomSheetScrollView
-              style={stylesWithInsets.filtersScrollView}
-              contentContainerStyle={stylesWithInsets.filtersScrollContent}
-              showsVerticalScrollIndicator
-              keyboardShouldPersistTaps='handled'
-            >
-              <View style={stylesWithInsets.filtersSheetHeader}>
-                <AppTypography variant='h2' text='Filters' />
+      ref={bottomSheetRef}
+      index={0}
+      snapPoints={filtersSheetSnapPoints}
+      enableDynamicSizing={false}
+      enablePanDownToClose
+      backdropComponent={renderFiltersSheetBackdrop}
+      footerComponent={renderFiltersSheetFooter}
+      backgroundStyle={stylesWithInsets.filtersSheetBackground}
+      handleIndicatorStyle={stylesWithInsets.filtersSheetHandleIndicator}
+      topInset={insets.top}
+      onClose={onDismiss}
+    >
+      <BottomSheetScrollView
+        style={stylesWithInsets.filtersScrollView}
+        contentContainerStyle={stylesWithInsets.filtersScrollContent}
+        showsVerticalScrollIndicator
+        keyboardShouldPersistTaps='handled'
+      >
+        <View style={stylesWithInsets.filtersSheetHeader}>
+          <AppTypography variant='h2' text='Filters' />
 
-                <AppTypography
-                  variant='subtitle'
-                  style={stylesWithInsets.filtersSheetSubtitle}
-                  text='Find events by date, genre, and venue.'
-                />
-              </View>
+          <AppTypography
+            variant='subtitle'
+            style={stylesWithInsets.filtersSheetSubtitle}
+            text='Find events by date, genre, and venue.'
+          />
+        </View>
 
-              <View style={stylesWithInsets.filterSection}>
-                <AppTypography variant='h3' text='Dates' />
+        <View style={stylesWithInsets.filterSection}>
+          <AppTypography variant='h3' text='Dates' />
 
-                <View style={stylesWithInsets.filterChipsContainer}>
-                  {dateFilters.map((date) => {
-                    const isSelected = filters.date === date
+          <View style={stylesWithInsets.filterChipsContainer}>
+            {dateFilters.map((date) => {
+              const isSelected = filters.date === date
 
-                    return (
-                      <TouchableOpacity
-                        key={date}
-                        style={[
-                          stylesWithInsets.filterChip,
-                          isSelected && stylesWithInsets.filterChipSelected,
-                        ]}
-                        activeOpacity={0.7}
-                        onPress={() => onDateFilterPress(date)}
-                      >
-                        <AppTypography
-                          variant='subtitle'
-                          style={[
-                            stylesWithInsets.filterChipText,
-                            isSelected && stylesWithInsets.filterChipTextSelected,
-                          ]}
-                          text={date}
-                        />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
+              return (
+                <TouchableOpacity
+                  key={date}
+                  style={[
+                    stylesWithInsets.filterChip,
+                    isSelected && stylesWithInsets.filterChipSelected,
+                  ]}
+                  activeOpacity={0.7}
+                  onPress={() => onDateFilterPress(date)}
+                >
+                  <AppTypography
+                    variant='subtitle'
+                    style={[
+                      stylesWithInsets.filterChipText,
+                      isSelected && stylesWithInsets.filterChipTextSelected,
+                    ]}
+                    text={date}
+                  />
+                </TouchableOpacity>
+              )
+            })}
+          </View>
 
-                {filters.date === 'Custom dates' ? customDatesJsx : null}
-              </View>
+          {filters.date === 'Custom dates' ? customDatesJsx : null}
+        </View>
 
-              <View style={stylesWithInsets.filterSection}>
-                <AppTypography variant='h3' text='Genres' />
+        <View style={stylesWithInsets.filterSection}>
+          <AppTypography variant='h3' text='Genres' />
 
-                <View style={stylesWithInsets.filterChipsContainer}>
-                  {genres.map((genre) => {
-                    const isSelected = filters.genres.includes(genre.id)
+          <View style={stylesWithInsets.filterChipsContainer}>
+            {genres.map((genre) => {
+              const isSelected = filters.genres.includes(genre.id)
 
-                    return (
-                      <TouchableOpacity
-                        key={genre.id}
-                        style={[
-                          stylesWithInsets.filterChip,
-                          isSelected && stylesWithInsets.filterChipSelected,
-                        ]}
-                        activeOpacity={0.7}
-                        onPress={() => onGenrePress(genre.id)}
-                      >
-                        <AppTypography
-                          variant='subtitle'
-                          style={[
-                            stylesWithInsets.filterChipText,
-                            isSelected && stylesWithInsets.filterChipTextSelected,
-                          ]}
-                          text={genre.name}
-                        />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              </View>
+              return (
+                <TouchableOpacity
+                  key={genre.id}
+                  style={[
+                    stylesWithInsets.filterChip,
+                    isSelected && stylesWithInsets.filterChipSelected,
+                  ]}
+                  activeOpacity={0.7}
+                  onPress={() => onGenrePress(genre.id)}
+                >
+                  <AppTypography
+                    variant='subtitle'
+                    style={[
+                      stylesWithInsets.filterChipText,
+                      isSelected && stylesWithInsets.filterChipTextSelected,
+                    ]}
+                    text={genre.name}
+                  />
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+        </View>
 
-              <View style={stylesWithInsets.filterSection}>
-                <AppTypography variant='h3' text='Venues' />
+        <View style={stylesWithInsets.filterSection}>
+          <AppTypography variant='h3' text='Venues' />
 
-                <View style={stylesWithInsets.venuesList}>
-                  {venues.map((venue) => {
-                    const isSelected = filters.venues.includes(venue.id)
+          <View style={stylesWithInsets.venuesList}>
+            {venues.map((venue) => {
+              const isSelected = filters.venues.includes(venue.id)
 
-                    return (
-                      <TouchableOpacity
-                        key={venue.id}
-                        style={stylesWithInsets.venueRow}
-                        activeOpacity={0.7}
-                        onPress={() => onVenuePress(venue.id)}
-                      >
-                        <View
-                          style={[
-                            stylesWithInsets.checkbox,
-                            isSelected && stylesWithInsets.checkboxSelected,
-                          ]}
-                        >
-                          {isSelected ? (
-                            <CheckIcon color='#F9F9F9' size={14} />
-                          ) : null}
-                        </View>
+              return (
+                <TouchableOpacity
+                  key={venue.id}
+                  style={stylesWithInsets.venueRow}
+                  activeOpacity={0.7}
+                  onPress={() => onVenuePress(venue.id)}
+                >
+                  <View
+                    style={[
+                      stylesWithInsets.checkbox,
+                      isSelected && stylesWithInsets.checkboxSelected,
+                    ]}
+                  >
+                    {isSelected ? (
+                      <CheckIcon color='#F9F9F9' size={14} />
+                    ) : null}
+                  </View>
 
-                        <AppTypography variant='subtitle' text={venue.name} />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              </View>
-            </BottomSheetScrollView>
-          </BottomSheet>
+                  <AppTypography variant='subtitle' text={venue.name} />
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+        </View>
+      </BottomSheetScrollView>
+    </BottomSheet>
   )
 }
 

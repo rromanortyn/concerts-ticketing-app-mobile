@@ -1,4 +1,5 @@
 import {
+  Activity,
   FC,
   useMemo,
   useRef,
@@ -29,7 +30,7 @@ import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import AppTypography from '@/components/elements/app-typography/app-typography'
 import CitiesList from './components/cities-list/cities-list'
 import EventCard from './components/event-card/event-card'
-import EventsFilterBottomSheet from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
+import EventsFilterBottomSheet, { EventsFiltersState } from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
 import styles from './styles'
 
 const cities = [
@@ -201,6 +202,14 @@ const HomeScreen: FC = () => {
     setIsFiltersSheetOpen(false)
   }
 
+  const onFiltersApply = (
+    values: EventsFiltersState,
+    isChanged: boolean,
+  ) => {
+    setHasFilterBadge(isChanged)
+    console.log('Applied filters:', values, 'Is changed:', isChanged)
+  }
+
   const citySelectorChevronJsx = isCitiesListOpen ? (
     <ChevronUpIcon color='#F9F9F9' size={16} />
   ) : (
@@ -312,14 +321,18 @@ const HomeScreen: FC = () => {
         </View>
       </View>
 
-      {isFiltersSheetOpen && Platform.OS === 'android' ? (
-        <View style={stylesWithInsets.filtersSheetOverlay}>
-          <EventsFilterBottomSheet
-            genres={genres}
-            venues={venues}
-            onDismiss={onFiltersDismiss}
-          />
-        </View>
+      {Platform.OS === 'android' ? (
+        <Activity mode={isFiltersSheetOpen ? 'visible' : 'hidden'}>
+          <View style={stylesWithInsets.filtersSheetOverlay}>
+            <EventsFilterBottomSheet
+              genres={genres}
+              venues={venues}
+              isVisible={isFiltersSheetOpen}
+              onApply={onFiltersApply}
+              onDismiss={onFiltersDismiss}
+            />
+          </View>
+        </Activity>
       ) : null}
     </>
   )
