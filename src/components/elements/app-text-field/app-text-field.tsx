@@ -2,7 +2,7 @@ import {
   forwardRef,
   RefObject,
   useMemo,
-  useState
+  useState,
 } from 'react'
 import {
   GestureResponderEvent,

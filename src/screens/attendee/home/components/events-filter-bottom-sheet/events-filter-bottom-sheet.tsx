@@ -4,12 +4,12 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react'
 import {
   TouchableOpacity,
   useWindowDimensions,
-  View
+  View,
 } from 'react-native'
 
 import BottomSheet, {
@@ -17,7 +17,7 @@ import BottomSheet, {
   BottomSheetBackdropProps,
   BottomSheetFooter,
   BottomSheetFooterProps,
-  BottomSheetScrollView
+  BottomSheetScrollView,
 } from '@gorhom/bottom-sheet'
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import { CheckIcon } from 'lucide-react-native'
@@ -27,7 +27,11 @@ import AppButton from '@/components/elements/app-button/app-button'
 import AppTypography from '@/components/elements/app-typography/app-typography'
 import { dateFilters, initialFiltersState } from './consts'
 import EventsFilterBottomSheetProps from './events-filter-bottom-sheet.props'
-import { CustomDateField, DateFilter, EventsFiltersState } from './types'
+import {
+  CustomDateField,
+  DateFilter,
+  EventsFiltersState,
+} from './types'
 import {
   createInitialEventsFiltersState,
   formatDate,

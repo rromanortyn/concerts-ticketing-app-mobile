@@ -1,9 +1,13 @@
-import { useFocusEffect, useRouter } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { ActivityIndicator } from 'react-native'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery } from '@tanstack/react-query'
+import { useFocusEffect, useRouter } from 'expo-router'
 
 import axiosInstance from '@/consts/axios-instance'
 import AsyncStorageKey from '@/types/enums/async-storage-key.enum'

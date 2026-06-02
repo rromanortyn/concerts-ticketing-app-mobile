@@ -2,7 +2,7 @@ import {
   FC,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react'
 import {
   Platform,
@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
-  View
+  View,
 } from 'react-native'
 
 import {
@@ -21,7 +21,7 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
   FilterIcon,
-  SearchIcon
+  SearchIcon,
 } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 

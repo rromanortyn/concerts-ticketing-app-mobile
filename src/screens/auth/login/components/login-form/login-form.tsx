@@ -2,7 +2,7 @@ import { FC, useRef, useState } from 'react'
 import {
   TextInput,
   TouchableWithoutFeedback,
-  View
+  View,
 } from 'react-native'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,7 +10,7 @@ import {
   AtSign,
   EyeIcon,
   EyeOffIcon,
-  LockIcon
+  LockIcon,
 } from 'lucide-react-native'
 import { Controller, useForm } from 'react-hook-form'
 

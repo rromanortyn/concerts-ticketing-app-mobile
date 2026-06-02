@@ -1,5 +1,9 @@
 import { FC, useMemo } from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import {
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 
 import AppButtonProps from './app-button.props'
 import styles from './app-button.styles'
