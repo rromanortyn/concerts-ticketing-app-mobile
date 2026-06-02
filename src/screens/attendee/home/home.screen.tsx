@@ -48,13 +48,6 @@ const cities = [
   { id: 10, name: 'Odesa' },
 ]
 
-const dateFilters = [
-  'Today',
-  'Tomorrow',
-  'This week',
-  'Custom dates',
-] as const
-
 const genres = [
   {
     id: 1,

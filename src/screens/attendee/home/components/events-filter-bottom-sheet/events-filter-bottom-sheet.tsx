@@ -40,7 +40,6 @@ type DateFilter = typeof dateFilters[number]
 type CustomDateField = 'from' | 'to'
 
 export interface EventsFiltersState {
-  date: DateFilter | null,
   genres: number[],
   venues: number[],
   customDates: {
@@ -50,7 +49,6 @@ export interface EventsFiltersState {
 }
 
 const initialFiltersState: EventsFiltersState = {
-  date: null,
   genres: [],
   venues: [],
   customDates: {
@@ -62,7 +60,6 @@ const initialFiltersState: EventsFiltersState = {
 export const createInitialEventsFiltersState = (
   values: EventsFiltersState = initialFiltersState,
 ): EventsFiltersState => ({
-  date: values.date,
   genres: [...values.genres],
   venues: [...values.venues],
   customDates: {
@@ -70,6 +67,53 @@ export const createInitialEventsFiltersState = (
     to: values.customDates.to ? new Date(values.customDates.to) : null,
   },
 })
+
+const createCurrentHourDate = (date = new Date()): Date => {
+  const currentHourDate = new Date(date)
+
+  currentHourDate.setMinutes(0, 0, 0)
+
+  return currentHourDate
+}
+
+const createMidnightDate = (date: Date, daysToAdd: number): Date => {
+  const midnightDate = new Date(date)
+
+  midnightDate.setHours(0, 0, 0, 0)
+  midnightDate.setDate(midnightDate.getDate() + daysToAdd)
+
+  return midnightDate
+}
+
+const getDateFilterCustomDates = (dateFilter: Exclude<DateFilter, 'Custom dates'>) => {
+  const now = new Date()
+  const currentHourDate = createCurrentHourDate(now)
+
+  if (dateFilter === 'Today') {
+    return {
+      from: currentHourDate,
+      to: createMidnightDate(now, 1),
+    }
+  }
+
+  if (dateFilter === 'Tomorrow') {
+    const tomorrowCurrentHourDate = new Date(currentHourDate)
+
+    tomorrowCurrentHourDate.setDate(tomorrowCurrentHourDate.getDate() + 1)
+
+    return {
+      from: tomorrowCurrentHourDate,
+      to: createMidnightDate(now, 2),
+    }
+  }
+
+  const daysUntilMonday = now.getDay() === 0 ? 1 : 8 - now.getDay()
+
+  return {
+    from: currentHourDate,
+    to: createMidnightDate(now, daysUntilMonday),
+  }
+}
 
 const formatDate = (date: Date | null): string => {
   if (!date) {
@@ -111,6 +155,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
     () => createInitialEventsFiltersState(initialValues),
   )
   const [activeDatePickerField, setActiveDatePickerField] = useState<CustomDateField | null>(null)
+  const [selectedDateFilter, setSelectedDateFilter] = useState<DateFilter | null>(null)
 
   const stylesWithInsets = useMemo(() => styles({
     bottomInset: insets.bottom,
@@ -126,8 +171,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
 
   const isFiltersChanged = useCallback((values: EventsFiltersState) => (
     Boolean(
-      values.date
-      || values.genres.length
+      values.genres.length
       || values.venues.length
       || values.customDates.from
       || values.customDates.to,
@@ -138,6 +182,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
     if (isVisible) {
       setFilters(createInitialEventsFiltersState(initialValues))
       setActiveDatePickerField(null)
+      setSelectedDateFilter(null)
       bottomSheetRef.current?.snapToIndex(0)
     }
   }, [
@@ -160,18 +205,32 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
   const onResetFilters = () => {
     setFilters(createInitialEventsFiltersState())
     setActiveDatePickerField(null)
+    setSelectedDateFilter(null)
   }
 
-  const onDateFilterPress = (date: DateFilter) => {
+  const onDateFilterPress = (dateFilter: DateFilter) => {
+    const isSelected = selectedDateFilter === dateFilter
+
+    setSelectedDateFilter(isSelected ? null : dateFilter)
+
     setFilters((prev) => {
-      const isSelected = prev.date === date
+      if (isSelected) {
+        return {
+          ...prev,
+          customDates: initialFiltersState.customDates,
+        }
+      }
+
+      if (dateFilter === 'Custom dates') {
+        return {
+          ...prev,
+          customDates: prev.customDates,
+        }
+      }
 
       return {
         ...prev,
-        date: isSelected ? null : date,
-        customDates: !isSelected && date === 'Custom dates'
-          ? prev.customDates
-          : initialFiltersState.customDates,
+        customDates: getDateFilterCustomDates(dateFilter),
       }
     })
   }
@@ -186,9 +245,10 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
       return
     }
   
+    setSelectedDateFilter('Custom dates')
+
     setFilters((prev) => ({
       ...prev,
-      date: 'Custom dates',
       customDates: {
         ...prev.customDates,
         [activeDatePickerField]: selectedDate,
@@ -324,7 +384,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
 
           <View style={stylesWithInsets.filterChipsContainer}>
             {dateFilters.map((date) => {
-              const isSelected = filters.date === date
+              const isSelected = selectedDateFilter === date
 
               return (
                 <TouchableOpacity
@@ -349,7 +409,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
             })}
           </View>
 
-          {filters.date === 'Custom dates' ? customDatesJsx : null}
+          {selectedDateFilter === 'Custom dates' ? customDatesJsx : null}
         </View>
 
         <View style={stylesWithInsets.filterSection}>
