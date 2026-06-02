@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 
 interface Props {
-  bottomInset: number,
   topInset: number,
   windowDimensions: {
     height: number,
@@ -9,7 +8,7 @@ interface Props {
   },
 }
 
-const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleSheet.create({
+const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
@@ -65,6 +64,9 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
   searchInput: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  searchInputText: {
+    color: '#F9F9F9',
   },
   filterButton: {
     position: 'relative',

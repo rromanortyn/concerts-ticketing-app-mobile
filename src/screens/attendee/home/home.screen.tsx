@@ -141,11 +141,9 @@ const HomeScreen: FC = () => {
   const searchInputRef = useRef<TextInput>(null)
 
   const stylesWithInsets = useMemo(() => styles({
-    bottomInset: insets.bottom,
     topInset: insets.top,
     windowDimensions,
   }), [
-    insets.bottom,
     insets.top,
     windowDimensions,
   ])
@@ -227,6 +225,7 @@ const HomeScreen: FC = () => {
             <View style={stylesWithInsets.searchContainer}>
               <AppTextField
                 ref={searchInputRef}
+                style={stylesWithInsets.searchInputText}
                 containerStyle={stylesWithInsets.searchInput}
                 placeholder='Search...'
                 placeholderColors={searchInputPlaceholderColors}

@@ -28,6 +28,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
       default: '#605E5E',
       focused: '#AFAFAF',
     },
+    style,
     containerStyle,
     leftAdornment,
     rightAdornment,
@@ -63,7 +64,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
         </View>
         <TextInput
           ref={ref}
-          style={styles.textInput}
+          style={[styles.textInput, style]}
           secureTextEntry={type === 'password'}
           autoFocus={false}
           editable={!isDisabled}
