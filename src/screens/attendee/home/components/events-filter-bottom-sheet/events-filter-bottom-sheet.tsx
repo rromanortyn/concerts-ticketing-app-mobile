@@ -163,13 +163,17 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
   }
 
   const onDateFilterPress = (date: DateFilter) => {
-    setFilters((prev) => ({
-      ...prev,
-      date,
-      customDates: date === 'Custom dates'
-        ? prev.customDates
-        : initialFiltersState.customDates,
-    }))
+    setFilters((prev) => {
+      const isSelected = prev.date === date
+
+      return {
+        ...prev,
+        date: isSelected ? null : date,
+        customDates: !isSelected && date === 'Custom dates'
+          ? prev.customDates
+          : initialFiltersState.customDates,
+      }
+    })
   }
 
   const onCustomDateChange = (
