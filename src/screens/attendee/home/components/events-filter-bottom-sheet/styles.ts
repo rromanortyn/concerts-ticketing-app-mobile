@@ -9,7 +9,7 @@ interface Props {
   },
 }
 
-const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleSheet.create({
+const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',

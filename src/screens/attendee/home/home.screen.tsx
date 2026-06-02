@@ -1,46 +1,35 @@
 import {
   FC,
-  useCallback,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
 import {
-  FlatList,
   Platform,
   ScrollView,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
-  View,
+  View
 } from 'react-native'
 
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetBackdropProps,
-  BottomSheetFooter,
-  BottomSheetFooterProps,
-  BottomSheetScrollView,
-} from '@gorhom/bottom-sheet'
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import {
   BellIcon,
   BookmarkIcon,
-  CheckIcon,
   ChevronDownIcon,
   ChevronRightIcon,
   ChevronUpIcon,
   FilterIcon,
-  SearchIcon,
+  SearchIcon
 } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import AppButton from '@/components/elements/app-button/app-button'
 import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import AppTypography from '@/components/elements/app-typography/app-typography'
-import CitySuggestion from './components/city-suggestion/city-suggestion'
+import CitiesList from './components/cities-list/cities-list'
 import EventCard from './components/event-card/event-card'
+import EventsFilterBottomSheet from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
 import styles from './styles'
 
 const cities = [
@@ -64,25 +53,70 @@ const dateFilters = [
 ] as const
 
 const genres = [
-  'Rock',
-  'Pop',
-  'Hip-Hop',
-  'Jazz',
-  'Classical',
-  'Electronic',
-  'Indie',
-  'Country',
-] as const
+  {
+    id: 1,
+    name: 'Rock',
+  },
+  {
+    id: 2,
+    name: 'Pop',
+  },
+  {
+    id: 3,
+    name: 'Hip-Hop',
+  },
+  {
+    id: 4,
+    name: 'Jazz',
+  },
+  {
+    id: 5,
+    name: 'Classical',
+  },
+  {
+    id: 6,
+    name: 'Electronic',
+  },
+  {
+    id: 7,
+    name: 'Indie',
+  },
+  {
+    id: 8,
+    name: 'Country',
+  },
+]
 
 const venues = [
-  'Stereo Plaza',
-  'Atlas',
-  'Caribbean Club',
-  'Bel Etage',
-  'VDNH Concert Hall',
-  'Docker Pub',
-  'October Palace',
-] as const
+  {
+    id: 1,
+    name: 'Stereo Plaza',
+  },
+  {
+    id: 2,
+    name: 'Atlas',
+  },
+  {
+    id: 3,
+    name: 'Caribbean Club',
+  },
+  {
+    id: 4,
+    name: 'Bel Etage',
+  },
+  {
+    id: 5,
+    name: 'VDNH Concert Hall',
+  },
+  {
+    id: 6,
+    name: 'Docker Pub',
+  },
+  {
+    id: 7,
+    name: 'October Palace',
+  },
+]
 
 const searchInputPlaceholderColors = {
   default: '#F9F9F9',
@@ -114,7 +148,7 @@ const initialFiltersState: FiltersState = {
   },
 }
 
-const formatDate = (date: Date | null) => {
+const formatDate = (date: Date | null): string => {
   if (!date) {
     return 'Select date'
   }
@@ -126,14 +160,6 @@ const formatDate = (date: Date | null) => {
   }).format(date)
 }
 
-const areFiltersActive = (filters: FiltersState) => (
-  filters.date !== null
-  || filters.genres.length > 0
-  || filters.venues.length > 0
-  || filters.customDates.from !== null
-  || filters.customDates.to !== null
-)
-
 const HomeScreen: FC = () => {
   const windowDimensions = useWindowDimensions()
   const insets = useSafeAreaInsets()
@@ -141,14 +167,9 @@ const HomeScreen: FC = () => {
   const [isCitiesListOpen, setIsCitiesListOpen] = useState<boolean>(false)
   const [isFiltersSheetOpen, setIsFiltersSheetOpen] = useState<boolean>(false)
   const [hasFilterBadge, setHasFilterBadge] = useState<boolean>(false)
-  const [hasFilterChangesSinceOpen, setHasFilterChangesSinceOpen] = useState<boolean>(false)
-  const [activeDatePickerField, setActiveDatePickerField] = useState<CustomDateField | null>(null)
-  const [filters, setFilters] = useState<FiltersState>(initialFiltersState)
   const [search, setSearch] = useState<string>('')
 
   const searchInputRef = useRef<TextInput>(null)
-
-  const filtersSheetSnapPoints = useMemo(() => ['100%'], [])
 
   const stylesWithInsets = useMemo(() => styles({
     bottomInset: insets.bottom,
@@ -159,20 +180,6 @@ const HomeScreen: FC = () => {
     insets.top,
     windowDimensions,
   ])
-
-  const renderFiltersSheetBackdrop = useCallback((props: BottomSheetBackdropProps) => (
-    <BottomSheetBackdrop
-      {...props}
-      appearsOnIndex={0}
-      disappearsOnIndex={-1}
-      opacity={0.45}
-      pressBehavior='close'
-    />
-  ), [])
-
-  const markFiltersChanged = () => {
-    setHasFilterChangesSinceOpen(true)
-  }
 
   const onCitiesToggle = () => {
     setIsCitiesListOpen((prev) => !prev)
@@ -187,106 +194,12 @@ const HomeScreen: FC = () => {
       return
     }
 
-    setHasFilterChangesSinceOpen(false)
     setIsFiltersSheetOpen(true)
   }
 
   const onFiltersDismiss = () => {
-    setHasFilterBadge(hasFilterChangesSinceOpen && areFiltersActive(filters))
-    setHasFilterChangesSinceOpen(false)
-    setActiveDatePickerField(null)
     setIsFiltersSheetOpen(false)
   }
-
-  const onDateFilterPress = (date: DateFilter) => {
-    markFiltersChanged()
-
-    setFilters((prev) => ({
-      ...prev,
-      date,
-      customDates: date === 'Custom dates'
-        ? prev.customDates
-        : initialFiltersState.customDates,
-    }))
-  }
-
-  const onGenrePress = (genre: Genre) => {
-    markFiltersChanged()
-
-    setFilters((prev) => {
-      const isSelected = prev.genres.includes(genre)
-
-      return {
-        ...prev,
-        genres: isSelected
-          ? prev.genres.filter((item) => item !== genre)
-          : [...prev.genres, genre],
-      }
-    })
-  }
-
-  const onVenuePress = (venue: Venue) => {
-    markFiltersChanged()
-
-    setFilters((prev) => {
-      const isSelected = prev.venues.includes(venue)
-
-      return {
-        ...prev,
-        venues: isSelected
-          ? prev.venues.filter((item) => item !== venue)
-          : [...prev.venues, venue],
-      }
-    })
-  }
-
-  const onCustomDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate?: Date,
-  ) => {
-    setActiveDatePickerField(null)
-
-    if (event.type === 'dismissed' || !activeDatePickerField || !selectedDate) {
-      return
-    }
-
-    markFiltersChanged()
-
-    setFilters((prev) => ({
-      ...prev,
-      date: 'Custom dates',
-      customDates: {
-        ...prev.customDates,
-        [activeDatePickerField]: selectedDate,
-      },
-    }))
-  }
-
-  const onResetFilters = () => {
-    setFilters(initialFiltersState)
-    setHasFilterBadge(false)
-    setHasFilterChangesSinceOpen(false)
-    setActiveDatePickerField(null)
-  }
-
-  const renderFiltersSheetFooter = useCallback((props: BottomSheetFooterProps) => (
-    <BottomSheetFooter
-      {...props}
-      // bottomInset={insets.bottom}
-    >
-      <View style={stylesWithInsets.filtersFooter}>
-        <AppButton
-          title='Reset filters'
-          variant='outlined'
-          onPress={onResetFilters}
-        />
-      </View>
-    </BottomSheetFooter>
-  ), [
-    insets.bottom,
-    onResetFilters,
-    stylesWithInsets.filtersFooter,
-  ])
 
   const citySelectorChevronJsx = isCitiesListOpen ? (
     <ChevronUpIcon color='#F9F9F9' size={16} />
@@ -297,54 +210,15 @@ const HomeScreen: FC = () => {
   const citiesListJsx = isCitiesListOpen ? (
     <TouchableWithoutFeedback onPress={onCitiesToggle}>
       <View style={stylesWithInsets.citiesListContainer}>
-        <FlatList
-          style={stylesWithInsets.citiesList}
-          data={cities}
-          renderItem={({ item, index }) => (
-            <CitySuggestion
-              name={item.name}
-              hasDivider={index !== cities.length - 1}
-              onPress={() => {}}
-            />
-          )}
-          keyExtractor={(item) => `${item.id}`}
+        <CitiesList
+          items={cities}
+          onItemPress={(id) => {
+            console.log('Selected city ID:', id)
+          }}
         />
       </View>
     </TouchableWithoutFeedback>
   ) : null
-
-  const customDatesJsx = (
-    <View style={stylesWithInsets.customDatesContainer}>
-      {(['from', 'to'] as const).map((field) => (
-        <TouchableOpacity
-          key={field}
-          style={stylesWithInsets.customDateButton}
-          activeOpacity={0.7}
-          onPress={() => setActiveDatePickerField(field)}
-        >
-          <AppTypography
-            variant='subtitle'
-            style={stylesWithInsets.customDateLabel}
-            text={field === 'from' ? 'From date' : 'To date'}
-          />
-
-          <AppTypography
-            variant='subtitle'
-            text={formatDate(filters.customDates[field])}
-          />
-        </TouchableOpacity>
-      ))}
-
-      {activeDatePickerField ? (
-        <DateTimePicker
-          mode='date'
-          value={filters.customDates[activeDatePickerField] ?? new Date()}
-          display='default'
-          onChange={onCustomDateChange}
-        />
-      ) : null}
-    </View>
-  )
 
   return (
     <>
@@ -440,131 +314,11 @@ const HomeScreen: FC = () => {
 
       {isFiltersSheetOpen && Platform.OS === 'android' ? (
         <View style={stylesWithInsets.filtersSheetOverlay}>
-          <BottomSheet
-            index={0}
-            snapPoints={filtersSheetSnapPoints}
-            enableDynamicSizing={false}
-            enablePanDownToClose
-            backdropComponent={renderFiltersSheetBackdrop}
-            footerComponent={renderFiltersSheetFooter}
-            backgroundStyle={stylesWithInsets.filtersSheetBackground}
-            handleIndicatorStyle={stylesWithInsets.filtersSheetHandleIndicator}
-            topInset={insets.top}
-            onClose={onFiltersDismiss}
-          >
-            <BottomSheetScrollView
-              style={stylesWithInsets.filtersScrollView}
-              contentContainerStyle={stylesWithInsets.filtersScrollContent}
-              showsVerticalScrollIndicator
-              keyboardShouldPersistTaps='handled'
-            >
-              <View style={stylesWithInsets.filtersSheetHeader}>
-                <AppTypography variant='h2' text='Filters' />
-
-                <AppTypography
-                  variant='subtitle'
-                  style={stylesWithInsets.filtersSheetSubtitle}
-                  text='Find events by date, genre, and venue.'
-                />
-              </View>
-
-              <View style={stylesWithInsets.filterSection}>
-                <AppTypography variant='h3' text='Dates' />
-
-                <View style={stylesWithInsets.filterChipsContainer}>
-                  {dateFilters.map((date) => {
-                    const isSelected = filters.date === date
-
-                    return (
-                      <TouchableOpacity
-                        key={date}
-                        style={[
-                          stylesWithInsets.filterChip,
-                          isSelected && stylesWithInsets.filterChipSelected,
-                        ]}
-                        activeOpacity={0.7}
-                        onPress={() => onDateFilterPress(date)}
-                      >
-                        <AppTypography
-                          variant='subtitle'
-                          style={[
-                            stylesWithInsets.filterChipText,
-                            isSelected && stylesWithInsets.filterChipTextSelected,
-                          ]}
-                          text={date}
-                        />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-
-                {filters.date === 'Custom dates' ? customDatesJsx : null}
-              </View>
-
-              <View style={stylesWithInsets.filterSection}>
-                <AppTypography variant='h3' text='Genres' />
-
-                <View style={stylesWithInsets.filterChipsContainer}>
-                  {genres.map((genre) => {
-                    const isSelected = filters.genres.includes(genre)
-
-                    return (
-                      <TouchableOpacity
-                        key={genre}
-                        style={[
-                          stylesWithInsets.filterChip,
-                          isSelected && stylesWithInsets.filterChipSelected,
-                        ]}
-                        activeOpacity={0.7}
-                        onPress={() => onGenrePress(genre)}
-                      >
-                        <AppTypography
-                          variant='subtitle'
-                          style={[
-                            stylesWithInsets.filterChipText,
-                            isSelected && stylesWithInsets.filterChipTextSelected,
-                          ]}
-                          text={genre}
-                        />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              </View>
-
-              <View style={stylesWithInsets.filterSection}>
-                <AppTypography variant='h3' text='Venues' />
-
-                <View style={stylesWithInsets.venuesList}>
-                  {venues.map((venue) => {
-                    const isSelected = filters.venues.includes(venue)
-
-                    return (
-                      <TouchableOpacity
-                        key={venue}
-                        style={stylesWithInsets.venueRow}
-                        activeOpacity={0.7}
-                        onPress={() => onVenuePress(venue)}
-                      >
-                        <View
-                          style={[
-                            stylesWithInsets.checkbox,
-                            isSelected && stylesWithInsets.checkboxSelected,
-                          ]}
-                        >
-                          {isSelected ? (
-                            <CheckIcon color='#F9F9F9' size={14} />
-                          ) : null}
-                        </View>
-
-                        <AppTypography variant='subtitle' text={venue} />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              </View>
-            </BottomSheetScrollView>
-          </BottomSheet>
+          <EventsFilterBottomSheet
+            genres={genres}
+            venues={venues}
+            onDismiss={onFiltersDismiss}
+          />
         </View>
       ) : null}
     </>
