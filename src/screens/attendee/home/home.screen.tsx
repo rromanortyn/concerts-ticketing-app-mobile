@@ -29,7 +29,10 @@ import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import AppTypography from '@/components/elements/app-typography/app-typography'
 import CitiesList from './components/cities-list/cities-list'
 import EventCard from './components/event-card/event-card'
-import EventsFilterBottomSheet, { EventsFiltersState } from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
+import EventsFilterBottomSheet, {
+  createInitialEventsFiltersState,
+  EventsFiltersState,
+} from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
 import styles from './styles'
 
 const cities = [
@@ -130,6 +133,9 @@ const HomeScreen: FC = () => {
   const [isCitiesListOpen, setIsCitiesListOpen] = useState<boolean>(false)
   const [isFiltersSheetOpen, setIsFiltersSheetOpen] = useState<boolean>(false)
   const [hasFilterBadge, setHasFilterBadge] = useState<boolean>(false)
+  const [filters, setFilters] = useState<EventsFiltersState>(
+    () => createInitialEventsFiltersState(),
+  )
   const [search, setSearch] = useState<string>('')
 
   const searchInputRef = useRef<TextInput>(null)
@@ -168,6 +174,7 @@ const HomeScreen: FC = () => {
     values: EventsFiltersState,
     isChanged: boolean,
   ) => {
+    setFilters(createInitialEventsFiltersState(values))
     setHasFilterBadge(isChanged)
     console.log('Applied filters:', values, 'Is changed:', isChanged)
   }
@@ -289,6 +296,7 @@ const HomeScreen: FC = () => {
             genres={genres}
             venues={venues}
             isVisible={isFiltersSheetOpen}
+            initialValues={filters}
             onApply={onFiltersApply}
             onDismiss={onFiltersDismiss}
           />

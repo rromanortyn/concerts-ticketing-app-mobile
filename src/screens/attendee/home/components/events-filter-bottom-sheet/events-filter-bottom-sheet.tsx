@@ -37,7 +37,6 @@ const dateFilters = [
 ] as const
 
 type DateFilter = typeof dateFilters[number]
-type Venue = string
 type CustomDateField = 'from' | 'to'
 
 export interface EventsFiltersState {
@@ -60,6 +59,18 @@ const initialFiltersState: EventsFiltersState = {
   },
 }
 
+export const createInitialEventsFiltersState = (
+  values: EventsFiltersState = initialFiltersState,
+): EventsFiltersState => ({
+  date: values.date,
+  genres: [...values.genres],
+  venues: [...values.venues],
+  customDates: {
+    from: values.customDates.from ? new Date(values.customDates.from) : null,
+    to: values.customDates.to ? new Date(values.customDates.to) : null,
+  },
+})
+
 const formatDate = (date: Date | null): string => {
   if (!date) {
     return 'Select date'
@@ -76,6 +87,7 @@ interface EventsFilterBottomSheetProps {
   genres: { id: number, name: string }[],
   venues: { id: number, name: string }[],
   isVisible: boolean,
+  initialValues?: EventsFiltersState,
   onApply: (values: EventsFiltersState, isChanged: boolean) => void,
   onDismiss: () => void,
 }
@@ -85,6 +97,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
     genres,
     venues,
     isVisible,
+    initialValues = initialFiltersState,
     onApply,
     onDismiss,
   } = props
@@ -94,7 +107,9 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
 
   const bottomSheetRef = useRef<BottomSheet>(null)
 
-  const [filters, setFilters] = useState<EventsFiltersState>(initialFiltersState)
+  const [filters, setFilters] = useState<EventsFiltersState>(
+    () => createInitialEventsFiltersState(initialValues),
+  )
   const [activeDatePickerField, setActiveDatePickerField] = useState<CustomDateField | null>(null)
 
   const stylesWithInsets = useMemo(() => styles({
@@ -121,14 +136,19 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
 
   useEffect(() => {
     if (isVisible) {
+      setFilters(createInitialEventsFiltersState(initialValues))
+      setActiveDatePickerField(null)
       bottomSheetRef.current?.snapToIndex(0)
     }
-  }, [isVisible])
+  }, [
+    initialValues,
+    isVisible,
+  ])
 
   const onApplyFilters = useCallback(() => {
     const isChanged = isFiltersChanged(filters)
 
-    onApply(filters, isChanged)
+    onApply(createInitialEventsFiltersState(filters), isChanged)
     onDismiss()
   }, [
     filters,
@@ -138,7 +158,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
   ])
 
   const onResetFilters = () => {
-    setFilters(initialFiltersState)
+    setFilters(createInitialEventsFiltersState())
     setActiveDatePickerField(null)
   }
 
