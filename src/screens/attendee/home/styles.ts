@@ -111,9 +111,18 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
     gap: 16,
     paddingHorizontal: 20,
   },
+  filtersSheetOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1000,
+  },
+  filtersSheetBackground: {
+    backgroundColor: '#F9F9F9',
+  },
+  filtersSheetHandleIndicator: {
+    backgroundColor: '#BDBDBD',
+  },
   filtersSheetContainer: {
     backgroundColor: '#F9F9F9',
-    paddingTop: 16,
     flex: 1,
   },
   filtersSheetHeader: {
@@ -200,7 +209,7 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
   filtersFooter: {
     paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: bottomInset,
+    paddingBottom: Math.max(bottomInset, 16),
     borderTopWidth: 1,
     borderTopColor: '#E6E6E6',
     backgroundColor: '#F9F9F9',
