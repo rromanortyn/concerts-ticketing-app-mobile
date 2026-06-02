@@ -29,10 +29,10 @@ import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import AppTypography from '@/components/elements/app-typography/app-typography'
 import CitiesList from './components/cities-list/cities-list'
 import EventCard from './components/event-card/event-card'
-import EventsFilterBottomSheet, {
-  createInitialEventsFiltersState,
-  EventsFiltersState,
-} from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
+import EventsFilterBottomSheet from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
+import { EventsFiltersState } from './components/events-filter-bottom-sheet/types'
+import { createInitialEventsFiltersState } from './components/events-filter-bottom-sheet/utils'
+
 import styles from './styles'
 
 const cities = [

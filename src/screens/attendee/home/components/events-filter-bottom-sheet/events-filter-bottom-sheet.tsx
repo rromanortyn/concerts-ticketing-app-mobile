@@ -12,8 +12,6 @@ import {
   View
 } from 'react-native'
 
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -22,119 +20,21 @@ import BottomSheet, {
   BottomSheetScrollView
 } from '@gorhom/bottom-sheet'
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker'
+import { CheckIcon } from 'lucide-react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import AppButton from '@/components/elements/app-button/app-button'
 import AppTypography from '@/components/elements/app-typography/app-typography'
+import { dateFilters, initialFiltersState } from './consts'
+import EventsFilterBottomSheetProps from './events-filter-bottom-sheet.props'
+import { CustomDateField, DateFilter, EventsFiltersState } from './types'
+import {
+  createInitialEventsFiltersState,
+  formatDate,
+  getDateFilterCustomDates,
+} from './utils'
 
-import { CheckIcon } from 'lucide-react-native'
 import styles from './styles'
-
-const dateFilters = [
-  'Today',
-  'Tomorrow',
-  'This week',
-  'Custom dates',
-] as const
-
-type DateFilter = typeof dateFilters[number]
-type CustomDateField = 'from' | 'to'
-
-export interface EventsFiltersState {
-  genres: number[],
-  venues: number[],
-  customDates: {
-    from: Date | null,
-    to: Date | null,
-  },
-}
-
-const initialFiltersState: EventsFiltersState = {
-  genres: [],
-  venues: [],
-  customDates: {
-    from: null,
-    to: null,
-  },
-}
-
-export const createInitialEventsFiltersState = (
-  values: EventsFiltersState = initialFiltersState,
-): EventsFiltersState => ({
-  genres: [...values.genres],
-  venues: [...values.venues],
-  customDates: {
-    from: values.customDates.from ? new Date(values.customDates.from) : null,
-    to: values.customDates.to ? new Date(values.customDates.to) : null,
-  },
-})
-
-const createCurrentHourDate = (date = new Date()): Date => {
-  const currentHourDate = new Date(date)
-
-  currentHourDate.setMinutes(0, 0, 0)
-
-  return currentHourDate
-}
-
-const createMidnightDate = (date: Date, daysToAdd: number): Date => {
-  const midnightDate = new Date(date)
-
-  midnightDate.setHours(0, 0, 0, 0)
-  midnightDate.setDate(midnightDate.getDate() + daysToAdd)
-
-  return midnightDate
-}
-
-const getDateFilterCustomDates = (dateFilter: Exclude<DateFilter, 'Custom dates'>) => {
-  const now = new Date()
-  const currentHourDate = createCurrentHourDate(now)
-
-  if (dateFilter === 'Today') {
-    return {
-      from: currentHourDate,
-      to: createMidnightDate(now, 1),
-    }
-  }
-
-  if (dateFilter === 'Tomorrow') {
-    const tomorrowCurrentHourDate = new Date(currentHourDate)
-
-    tomorrowCurrentHourDate.setDate(tomorrowCurrentHourDate.getDate() + 1)
-
-    return {
-      from: tomorrowCurrentHourDate,
-      to: createMidnightDate(now, 2),
-    }
-  }
-
-  const daysUntilMonday = now.getDay() === 0 ? 1 : 8 - now.getDay()
-
-  return {
-    from: currentHourDate,
-    to: createMidnightDate(now, daysUntilMonday),
-  }
-}
-
-const formatDate = (date: Date | null): string => {
-  if (!date) {
-    return 'Select date'
-  }
-
-  return new Intl.DateTimeFormat('en', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(date)
-}
-
-interface EventsFilterBottomSheetProps {
-  genres: { id: number, name: string }[],
-  venues: { id: number, name: string }[],
-  isVisible: boolean,
-  initialValues?: EventsFiltersState,
-  onApply: (values: EventsFiltersState, isChanged: boolean) => void,
-  onDismiss: () => void,
-}
 
 const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
   const {
