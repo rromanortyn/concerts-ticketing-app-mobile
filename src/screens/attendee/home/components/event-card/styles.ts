@@ -2,12 +2,10 @@ import { StyleSheet } from 'react-native'
 
 interface Props {
   containerWidth: number,
-  imageWidth: number,
-  imageHeight: number,
 }
 
-const styles = ({ containerWidth, imageWidth, imageHeight }: Props) => StyleSheet.create({
-  container: {
+const styles = ({ containerWidth }: Props) => StyleSheet.create({
+   container: {
     borderRadius: 12,
     position: 'relative',
     width: containerWidth,
@@ -15,8 +13,8 @@ const styles = ({ containerWidth, imageWidth, imageHeight }: Props) => StyleShee
     backgroundColor: '#FFF',
   },
   image: {
-    width: imageWidth,
-    height: imageHeight,
+    width: containerWidth - 40,
+    height: containerWidth - 40,
     borderRadius: 16,
     marginBottom: 20,
   },
@@ -43,8 +41,9 @@ const styles = ({ containerWidth, imageWidth, imageHeight }: Props) => StyleShee
     alignItems: 'center',
     gap: 4,
   },
-  locationText: {
+  venueNameText: {
     color: '#999',
+    marginBottom: 4,
   },
 })
 

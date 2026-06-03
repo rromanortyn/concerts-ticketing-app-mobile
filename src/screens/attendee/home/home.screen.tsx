@@ -1,5 +1,6 @@
 import {
   FC,
+  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -39,75 +40,31 @@ import { createInitialEventsFiltersState } from './components/events-filter-bott
 
 import styles from './styles'
 
-const genres = [
-  {
-    id: 1,
-    name: 'Rock',
-  },
-  {
-    id: 2,
-    name: 'Pop',
-  },
-  {
-    id: 3,
-    name: 'Hip-Hop',
-  },
-  {
-    id: 4,
-    name: 'Jazz',
-  },
-  {
-    id: 5,
-    name: 'Classical',
-  },
-  {
-    id: 6,
-    name: 'Electronic',
-  },
-  {
-    id: 7,
-    name: 'Indie',
-  },
-  {
-    id: 8,
-    name: 'Country',
-  },
-]
-
-const venues = [
-  {
-    id: 1,
-    name: 'Stereo Plaza',
-  },
-  {
-    id: 2,
-    name: 'Atlas',
-  },
-  {
-    id: 3,
-    name: 'Caribbean Club',
-  },
-  {
-    id: 4,
-    name: 'Bel Etage',
-  },
-  {
-    id: 5,
-    name: 'VDNH Concert Hall',
-  },
-  {
-    id: 6,
-    name: 'Docker Pub',
-  },
-  {
-    id: 7,
-    name: 'October Palace',
-  },
-]
-
 const searchInputPlaceholderColors = {
   default: '#F9F9F9',
   focused: '#d4d4d4',
+}
+
+interface GetEventsResponseDto {
+  items: {
+    id: number,
+    title: string,
+    venue: {
+      name: string,
+    },
+    city: {
+      name: string,
+    },
+    startDate: Date,
+  }[],
+}
+
+interface GetVenuesWithEventsResponseDto {
+  items: {
+    id: number,
+    name: string,
+    events: GetEventsResponseDto['items'],
+  }[],
 }
 
 const HomeScreen: FC = () => {
@@ -172,12 +129,23 @@ const HomeScreen: FC = () => {
     enabled: !!selectedCityId,
   })
 
-  // useEffect(
-  //   () => {
-    
-  //   },
-  //   [selectedCityId],
-  // )
+  const {
+    data: popularEventsData,
+    isFetching: isPopularEventsFetching,
+  } = useQuery<GetEventsResponseDto>({
+    queryKey: ['get-popular-events', selectedCityId],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/events/popular?cityId=${selectedCityId}`)
+
+      return response.data
+    },
+    staleTime: Infinity, 
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  })
+
 
   const {
     data: genres = [],
@@ -196,6 +164,23 @@ const HomeScreen: FC = () => {
     retry: false,
   })
 
+  const {
+    data: venuesWithEvents,
+    isFetching: isVenuesWithEventsFetching,
+  } = useQuery<GetVenuesWithEventsResponseDto>({
+    queryKey: ['get-venues-with-events', selectedCityId],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/venues?cityId=${selectedCityId}`)
+
+      return response.data
+    },
+    staleTime: Infinity, 
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  })
+console.log(JSON.stringify(venuesWithEvents, null, 2))
   const onCitiesToggle = () => {
     setIsCitiesListOpen((prev) => !prev)
   }
@@ -319,8 +304,8 @@ const HomeScreen: FC = () => {
 
         {citiesListJsx}
 
-        {/* This empty view is required for correct layout */}
-        <View>
+       
+        <ScrollView>
           <View style={stylesWithInsets.sectionHeaderContainer}>
             <AppTypography variant='h3' text='Upcoming events' />
 
@@ -329,22 +314,63 @@ const HomeScreen: FC = () => {
               <ChevronRightIcon color='#000' size={16} />
             </TouchableOpacity>
           </View>
-
+          
           <ScrollView
             horizontal
             contentContainerStyle={stylesWithInsets.eventsListContainer}
           >
-            {[1, 2, 3, 4, 5].map((item) => (
-              <TouchableOpacity key={item} activeOpacity={0.7}>
-                <EventCard
-                  containerWidth={windowDimensions.width * 0.7}
-                  imageWidth={windowDimensions.width * 0.7 - 40}
-                  imageHeight={windowDimensions.width * 0.7 - 40}
-                />
-              </TouchableOpacity>
-            ))}
+            {isPopularEventsFetching ? (
+              <View style={stylesWithInsets.sectionLoaderContainer}>
+                <ActivityIndicator size={96} color='#3C896D' />
+              </View>
+            ) : (popularEventsData?.items ?? []).map((event) => (
+                <TouchableOpacity key={event.id} activeOpacity={0.7}>
+                  <EventCard
+                    containerWidth={windowDimensions.width * 0.7}
+                    title={event.title}
+                    venue={event.venue}
+                    city={event.city}
+                    startDate={new Date(event.startDate)}
+                  />
+                </TouchableOpacity>
+              )
+            )}
           </ScrollView>
-        </View>
+
+          {isVenuesWithEventsFetching ? (
+              <View style={stylesWithInsets.sectionLoaderContainer}>
+                <ActivityIndicator size={96} color='#3C896D' />
+              </View>
+            ) : venuesWithEvents?.items.map((venue) => (
+              <Fragment key={venue.id}>
+                <View style={stylesWithInsets.sectionHeaderContainer}>
+                  <AppTypography variant='h3' text={venue.name} />
+
+                  <TouchableOpacity style={stylesWithInsets.seeAllButton}>
+                    <AppTypography variant='subtitle' text='See all' />
+                    <ChevronRightIcon color='#000' size={16} />
+                  </TouchableOpacity>
+                </View>
+
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={stylesWithInsets.eventsListContainer}
+                >
+                  {venue.events.map((event) => (
+                    <TouchableOpacity key={event.id} activeOpacity={0.7}>
+                      <EventCard
+                        containerWidth={windowDimensions.width * 0.7}
+                        title={event.title}
+                        venue={venue}
+                        city={event.city}
+                        startDate={new Date(event.startDate)}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </Fragment>
+            ))}
+        </ScrollView>
       </View>
 
       {isFiltersSheetOpen && Platform.OS === 'android' ? (

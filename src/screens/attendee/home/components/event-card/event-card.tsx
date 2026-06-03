@@ -5,26 +5,21 @@ import { Image } from 'expo-image'
 import { MapPinIcon } from 'lucide-react-native'
 
 import AppTypography from '@/components/elements/app-typography/app-typography'
+import EventCardProps from './event-card.props'
 
 import styles from './styles'
-
-interface EventCardProps {
-  containerWidth: number,
-  imageWidth: number,
-  imageHeight: number,
-}
 
 const EventCard: FC<EventCardProps> = (props) => {
   const {
     containerWidth,
-    imageWidth,
-    imageHeight,
+    title,
+    venue,
+    city,
+    startDate,
   } = props
 
   const stylesWithDimensions = styles({ 
-    containerWidth, 
-    imageWidth, 
-    imageHeight 
+    containerWidth,
   })
 
   return (
@@ -40,19 +35,19 @@ const EventCard: FC<EventCardProps> = (props) => {
       <View style={stylesWithDimensions.date}>
         <AppTypography
           variant='body'
-          text='12'
+          text={startDate.getDate().toString()}
           style={stylesWithDimensions.dateText}
         />
         <AppTypography
           variant='body'
-          text='June'
+          text={new Intl.DateTimeFormat('en', { month: 'short' }).format(startDate)}
           style={stylesWithDimensions.dateText}
         />
       </View>
 
       <AppTypography
         variant='h3'
-        text='Event name blablablablablablablabla'
+        text={title}
         style={stylesWithDimensions.title}
       />
 
@@ -60,8 +55,8 @@ const EventCard: FC<EventCardProps> = (props) => {
         <MapPinIcon color='#999' size={24} />
         <AppTypography
           variant='body'
-          text='Kyiv, Ukraine'
-          style={stylesWithDimensions.locationText}
+          text={venue.name}
+          style={stylesWithDimensions.venueNameText}
         />
       </View>
     </View>

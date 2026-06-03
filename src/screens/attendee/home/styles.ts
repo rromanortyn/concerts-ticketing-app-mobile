@@ -19,7 +19,6 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     borderBottomLeftRadius: 48,
     borderBottomRightRadius: 48,
     paddingHorizontal: 20,
-    marginBottom: 40,
   },
   topContainer: {
     marginTop: topInset + 24,
@@ -90,11 +89,18 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     borderColor: '#F9F9F9',
   },
   sectionHeaderContainer: {
+    paddingTop: 40,
     paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+  },
+  sectionLoaderContainer: {
+    height: 400,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: windowDimensions.width - 40,
   },
   seeAllButton: {
     flexDirection: 'row',
