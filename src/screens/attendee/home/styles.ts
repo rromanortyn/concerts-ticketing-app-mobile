@@ -65,6 +65,9 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
   },
+  searchInputLeftAdornmentContainer: {
+    marginLeft: 0,
+  },
   searchInputText: {
     color: '#F9F9F9',
   },

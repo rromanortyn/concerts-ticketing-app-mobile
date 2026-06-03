@@ -31,6 +31,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
     style,
     containerStyle,
     leftAdornment,
+    leftAdornmentContainerStyle,
     rightAdornment,
   } = props
 
@@ -59,7 +60,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
       <View
         style={[styles.container, containerStyle]}
       >
-        <View style={styles.leftAdornmentContainer}>
+        <View style={[styles.leftAdornmentContainer, leftAdornmentContainerStyle]}>
           {typeof leftAdornment === 'function' ? leftAdornment(isFocused) : leftAdornment}
         </View>
         <TextInput

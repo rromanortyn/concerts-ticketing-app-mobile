@@ -24,6 +24,7 @@ interface AppTextFieldProps {
     focused: string,
   },
   leftAdornment?: ReactNode | ((isFocused: boolean) => ReactNode),
+  leftAdornmentContainerStyle?: StyleProp<ViewStyle>,
   rightAdornment?: ReactNode,
 }
 

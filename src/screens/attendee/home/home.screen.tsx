@@ -234,6 +234,7 @@ const HomeScreen: FC = () => {
                     <SearchIcon color={color} size={32} />
                   )
                 }}
+                leftAdornmentContainerStyle={stylesWithInsets.searchInputLeftAdornmentContainer}
                 onChangeText={onSearchChange}
               />
             </View>
