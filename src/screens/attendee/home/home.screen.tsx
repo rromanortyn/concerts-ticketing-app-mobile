@@ -1,10 +1,12 @@
 import {
   FC,
+  useEffect,
   useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
 import {
+  ActivityIndicator,
   Platform,
   ScrollView,
   TextInput,
@@ -14,6 +16,7 @@ import {
   View,
 } from 'react-native'
 
+import { useQuery } from '@tanstack/react-query'
 import {
   BellIcon,
   BookmarkIcon,
@@ -27,6 +30,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import AppTypography from '@/components/elements/app-typography/app-typography'
+import axiosInstance from '@/consts/axios-instance'
 import CitiesList from './components/cities-list/cities-list'
 import EventCard from './components/event-card/event-card'
 import EventsFilterBottomSheet from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
@@ -34,19 +38,6 @@ import { EventsFiltersState } from './components/events-filter-bottom-sheet/type
 import { createInitialEventsFiltersState } from './components/events-filter-bottom-sheet/utils'
 
 import styles from './styles'
-
-const cities = [
-  { id: 1, name: 'Kyiv' },
-  { id: 2, name: 'Lviv' },
-  { id: 3, name: 'Kharkiv' },
-  { id: 4, name: 'Dnipro' },
-  { id: 5, name: 'Odesa' },
-  { id: 6, name: 'Kyiv' },
-  { id: 7, name: 'Lviv' },
-  { id: 8, name: 'Kharkiv' },
-  { id: 9, name: 'Dnipro' },
-  { id: 10, name: 'Odesa' },
-]
 
 const genres = [
   {
@@ -130,6 +121,7 @@ const HomeScreen: FC = () => {
     () => createInitialEventsFiltersState(),
   )
   const [search, setSearch] = useState<string>('')
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(null)
 
   const searchInputRef = useRef<TextInput>(null)
 
@@ -140,6 +132,69 @@ const HomeScreen: FC = () => {
     insets.top,
     windowDimensions,
   ])
+
+  const {
+    data: cities = [],
+    isFetching: isCitiesFetching,
+  } = useQuery<{ id: number, name: string }[]>({
+    queryKey: ['get-cities'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/cities')
+
+      return response.data
+    },
+    staleTime: Infinity, 
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  })
+
+  useEffect(
+    () => {
+      if (cities && cities.length > 0) {
+        setSelectedCityId(cities[0].id)
+      }
+    },
+    [cities],
+  )
+
+  const {
+    data: venues = [],
+    isFetching: isVenuesFetching,
+  } = useQuery<{ id: number, name: string }[]>({
+    queryKey: ['get-venues-by-city', selectedCityId],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/venues/all?cityId=${selectedCityId}`)
+
+      return response.data
+    },
+    enabled: !!selectedCityId,
+  })
+
+  // useEffect(
+  //   () => {
+    
+  //   },
+  //   [selectedCityId],
+  // )
+
+  const {
+    data: genres = [],
+    isFetching: isGenresFetching,
+  } = useQuery<{ id: number, name: string }[]>({
+    queryKey: ['get-genres'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/genres')
+
+      return response.data
+    },
+    staleTime: Infinity, 
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  })
 
   const onCitiesToggle = () => {
     setIsCitiesListOpen((prev) => !prev)
@@ -170,6 +225,11 @@ const HomeScreen: FC = () => {
     console.log('Applied filters:', values, 'Is changed:', isChanged)
   }
 
+  const onCityChange = (id: number) => {
+    setSelectedCityId(id)
+    setIsCitiesListOpen(false)
+  }
+
   const citySelectorChevronJsx = isCitiesListOpen ? (
     <ChevronUpIcon color='#F9F9F9' size={16} />
   ) : (
@@ -181,13 +241,17 @@ const HomeScreen: FC = () => {
       <View style={stylesWithInsets.citiesListContainer}>
         <CitiesList
           items={cities}
-          onItemPress={(id) => {
-            console.log('Selected city ID:', id)
-          }}
+          onItemPress={(id) => onCityChange(id)}
         />
       </View>
     </TouchableWithoutFeedback>
   ) : null
+
+  const selectedCityName = cities?.find((city) => city.id === selectedCityId)?.name || ''
+
+  if (isCitiesFetching) {
+    return <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' />
+  }
 
   return (
     <>
@@ -202,7 +266,7 @@ const HomeScreen: FC = () => {
               <AppTypography
                 variant='h3'
                 style={stylesWithInsets.citySelectorH3}
-                text='Kyiv, Ukraine'
+                text={selectedCityName}
               />
 
               {citySelectorChevronJsx}
@@ -286,6 +350,7 @@ const HomeScreen: FC = () => {
       {isFiltersSheetOpen && Platform.OS === 'android' ? (
         <View style={stylesWithInsets.filtersSheetOverlay}>
           <EventsFilterBottomSheet
+            isLoading={isGenresFetching || isVenuesFetching}
             genres={genres}
             venues={venues}
             isVisible={isFiltersSheetOpen}

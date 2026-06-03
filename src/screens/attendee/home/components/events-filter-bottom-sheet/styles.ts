@@ -9,7 +9,7 @@ interface Props {
   },
 }
 
-const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
+const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
@@ -118,7 +118,7 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     gap: 24,
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 120,
+    paddingBottom: 180 + bottomInset,
   },
   filtersSheetHeader: {
     paddingBottom: 16,
@@ -171,7 +171,6 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
   },
   venuesList: {
     gap: 16,
-    marginBottom: 16,
   },
   venueRow: {
     flexDirection: 'row',
@@ -193,7 +192,8 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
   },
   filtersFooter: {
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingTop: 12,
+    paddingBottom: Math.max(bottomInset, 12),
     borderTopWidth: 1,
     gap: 16,
     borderTopColor: '#E6E6E6',

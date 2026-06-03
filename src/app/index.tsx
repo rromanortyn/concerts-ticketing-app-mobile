@@ -65,7 +65,7 @@ const Index = () => {
   )
 
   const getMeQuery = useQuery({
-    queryKey: ['me', accessToken],
+    queryKey: ['get-me', accessToken],
     queryFn: async () => {
       const response = await axiosInstance.get('/me')
 
@@ -73,6 +73,9 @@ const Index = () => {
     },
     enabled: Boolean(accessToken),
   })
+
+  // get /genres
+  // get /venues/all?cityId
 
   useEffect(() => {
     if (!getMeQuery.data) {
@@ -82,8 +85,12 @@ const Index = () => {
     setUser(getMeQuery.data)
 
     router.dismissAll()
-    router.push('/attendee')
-  }, [getMeQuery.data, router, setUser])
+    router.replace('/attendee')
+  }, [
+    getMeQuery.data, 
+    router, 
+    setUser,
+  ])
 
   useEffect(() => {
     if (!getMeQuery.isError) {
