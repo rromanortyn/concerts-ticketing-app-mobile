@@ -254,7 +254,7 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
       ) : null}
     </View>
   )
-console.log(JSON.stringify(venues, null, 2))
+
   return (
     <BottomSheet
       ref={bottomSheetRef}

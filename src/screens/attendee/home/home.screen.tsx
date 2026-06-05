@@ -181,7 +181,7 @@ const HomeScreen: FC = () => {
     refetchOnReconnect: false,
     retry: false,
   })
-console.log(JSON.stringify(venuesWithEvents, null, 2))
+
   const onCitiesToggle = () => {
     setIsCitiesListOpen((prev) => !prev)
   }
@@ -235,6 +235,22 @@ console.log(JSON.stringify(venuesWithEvents, null, 2))
 
   const selectedCityName = cities?.find((city) => city.id === selectedCityId)?.name || ''
 
+  const venuesSectionsJsx = isVenuesWithEventsFetching ? (
+    <View style={stylesWithInsets.sectionLoaderContainer}>
+      <ActivityIndicator size={96} color='#3C896D' />
+    </View>
+  ) : venuesWithEvents?.items.map((venue) => (
+    <EventsSection
+      key={venue.id}
+      title={venue.name}
+      isEventsFetching={false}
+      events={venue.events.map((event) => ({
+        ...event,
+        venue,
+      }))}
+    />
+  ))
+
   if (isCitiesFetching) {
     return <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' />
   }
@@ -242,70 +258,70 @@ console.log(JSON.stringify(venuesWithEvents, null, 2))
   return (
     <>
       <View style={stylesWithInsets.container}>
-        <View style={stylesWithInsets.headerContainer}>
-          <View style={stylesWithInsets.topContainer}>
-            <TouchableOpacity
-              style={stylesWithInsets.citySelectorPressableContainer}
-              activeOpacity={0.7}
-              onPress={onCitiesToggle}
-            >
-              <AppTypography
-                variant='h3'
-                style={stylesWithInsets.citySelectorH3}
-                text={selectedCityName}
-              />
+        <View style={stylesWithInsets.headerOuterContainer}>
+          <View style={stylesWithInsets.headerContainer}>
+            <View style={stylesWithInsets.topContainer}>
+              <TouchableOpacity
+                style={stylesWithInsets.citySelectorPressableContainer}
+                activeOpacity={0.7}
+                onPress={onCitiesToggle}
+              >
+                <AppTypography
+                  variant='h3'
+                  style={stylesWithInsets.citySelectorH3}
+                  text={selectedCityName}
+                />
 
-              {citySelectorChevronJsx}
-            </TouchableOpacity>
+                {citySelectorChevronJsx}
+              </TouchableOpacity>
 
-            <View style={stylesWithInsets.rightContainer}>
-              <BookmarkIcon color='#F9F9F9' size={32} />
-              <BellIcon color='#F9F9F9' size={32} />
-            </View>
-          </View>
-
-          <View style={stylesWithInsets.bottomContainer}>
-            <View style={stylesWithInsets.searchContainer}>
-              <AppTextField
-                ref={searchInputRef}
-                style={stylesWithInsets.searchInputText}
-                containerStyle={stylesWithInsets.searchInput}
-                placeholder='Search...'
-                placeholderColors={searchInputPlaceholderColors}
-                value={search}
-                autoComplete='off'
-                inputMode='text'
-                leftAdornment={(isFocused) => {
-                  const color = isFocused
-                    ? searchInputPlaceholderColors.focused
-                    : searchInputPlaceholderColors.default
-
-                  return (
-                    <SearchIcon color={color} size={32} />
-                  )
-                }}
-                leftAdornmentContainerStyle={stylesWithInsets.searchInputLeftAdornmentContainer}
-                onChangeText={onSearchChange}
-              />
+              <View style={stylesWithInsets.rightContainer}>
+                <BookmarkIcon color='#F9F9F9' size={32} />
+                <BellIcon color='#F9F9F9' size={32} />
+              </View>
             </View>
 
-            <TouchableOpacity
-              style={stylesWithInsets.filterButton}
-              activeOpacity={0.7}
-              onPress={onFiltersOpen}
-            >
-              <FilterIcon color='#F9F9F9' size={32} />
+            <View style={stylesWithInsets.bottomContainer}>
+              <View style={stylesWithInsets.searchContainer}>
+                <AppTextField
+                  ref={searchInputRef}
+                  style={stylesWithInsets.searchInputText}
+                  containerStyle={stylesWithInsets.searchInput}
+                  placeholder='Search...'
+                  placeholderColors={searchInputPlaceholderColors}
+                  value={search}
+                  autoComplete='off'
+                  inputMode='text'
+                  leftAdornment={(isFocused) => {
+                    const color = isFocused
+                      ? searchInputPlaceholderColors.focused
+                      : searchInputPlaceholderColors.default
 
-              {hasFilterBadge ? (
-                <View style={stylesWithInsets.filterBadge} />
-              ) : null}
-            </TouchableOpacity>
+                    return (
+                      <SearchIcon color={color} size={32} />
+                    )
+                  }}
+                  leftAdornmentContainerStyle={stylesWithInsets.searchInputLeftAdornmentContainer}
+                  onChangeText={onSearchChange}
+                />
+              </View>
+
+              <TouchableOpacity
+                style={stylesWithInsets.filterButton}
+                activeOpacity={0.7}
+                onPress={onFiltersOpen}
+              >
+                <FilterIcon color='#F9F9F9' size={32} />
+
+                {hasFilterBadge ? (
+                  <View style={stylesWithInsets.filterBadge} />
+                ) : null}
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-
         {citiesListJsx}
 
-       
         <ScrollView>
           <EventsSection
             title='Upcoming events'
@@ -313,18 +329,7 @@ console.log(JSON.stringify(venuesWithEvents, null, 2))
             events={popularEventsData?.items ?? []}
           />
 
-          {isVenuesWithEventsFetching ? (
-            <View style={stylesWithInsets.sectionLoaderContainer}>
-              <ActivityIndicator size={96} color='#3C896D' />
-            </View>
-          ) : venuesWithEvents?.items.map((venue) => (
-            <EventsSection
-              key={venue.id}
-              title={venue.name}
-              isEventsFetching={false}
-              events={venue.events}
-            />
-          ))}
+          {venuesSectionsJsx}
         </ScrollView>
       </View>
 

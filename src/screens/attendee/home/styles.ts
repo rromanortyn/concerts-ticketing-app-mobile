@@ -13,6 +13,10 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
+  headerOuterContainer: {
+    borderBottomLeftRadius: 48,
+    borderBottomRightRadius: 48,
+  },
   headerContainer: {
     height: 200,
     backgroundColor: '#3C896D',

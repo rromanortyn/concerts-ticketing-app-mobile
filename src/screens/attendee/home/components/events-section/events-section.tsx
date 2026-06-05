@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native'
 
+import { router } from 'expo-router'
 import { ChevronRightIcon } from 'lucide-react-native'
 
 import AppTypography from '@/components/elements/app-typography/app-typography'
@@ -22,18 +23,27 @@ const EventsSection: FC<EventsSectionProps> = (props) => {
     events,
   } = props
 
+  const onEventPress = (id: number) => {
+    router.push(`/events/${id}`)
+  }
+
   const contentJsx = isEventsFetching ? (
     <View style={styles.sectionLoaderContainer}>
       <ActivityIndicator size={96} color='#3C896D' />
     </View>
   ) : events.map((event) => (
-    <TouchableOpacity key={event.id} activeOpacity={0.7}>
+    <TouchableOpacity
+      key={event.id}
+      activeOpacity={0.7}
+      onPress={() => onEventPress(event.id)}
+    >
       <EventCard
         containerWidth={Dimensions.get('window').width * 0.7}
         title={event.title}
         venue={event.venue}
         city={event.city}
         startDate={new Date(event.startDate)}
+        image={event.image}
       />
     </TouchableOpacity>
   ))

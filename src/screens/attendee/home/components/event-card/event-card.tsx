@@ -16,6 +16,7 @@ const EventCard: FC<EventCardProps> = (props) => {
     venue,
     city,
     startDate,
+    image,
   } = props
 
   const stylesWithDimensions = styles({ 
@@ -26,7 +27,7 @@ const EventCard: FC<EventCardProps> = (props) => {
     <View style={stylesWithDimensions.container}>
       <Image
         style={stylesWithDimensions.image}
-        source={{ uri: 'https://picsum.photos/seed/696/3000/2000' }}
+        source={{ uri: image.src }}
         contentFit='cover'
         transition={500}
         onError={(error) => console.log(error)}
