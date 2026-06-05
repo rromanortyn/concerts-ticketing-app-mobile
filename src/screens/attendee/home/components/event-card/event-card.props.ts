@@ -4,6 +4,7 @@ interface EventCardProps {
   venue: { name: string },
   city: { name: string },
   startDate: Date,
+  image: { src: string },
 }
 
 export default EventCardProps
