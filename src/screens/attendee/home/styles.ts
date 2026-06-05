@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 
 interface Props {
   topInset: number,
@@ -87,29 +87,6 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     backgroundColor: '#E53935',
     borderWidth: 1,
     borderColor: '#F9F9F9',
-  },
-  sectionHeaderContainer: {
-    paddingTop: 40,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  sectionLoaderContainer: {
-    height: 400,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: windowDimensions.width - 40,
-  },
-  seeAllButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  eventsListContainer: {
-    gap: 16,
-    paddingHorizontal: 20,
   },
   filtersSheetOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -208,6 +185,12 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     gap: 16,
     borderTopColor: '#E6E6E6',
     backgroundColor: '#F9F9F9',
+  },
+  sectionLoaderContainer: {
+    height: 400,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: Dimensions.get('window').width - 40,
   },
 })
 

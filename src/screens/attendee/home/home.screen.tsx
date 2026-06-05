@@ -1,6 +1,5 @@
 import {
   FC,
-  Fragment,
   useEffect,
   useMemo,
   useRef,
@@ -22,10 +21,9 @@ import {
   BellIcon,
   BookmarkIcon,
   ChevronDownIcon,
-  ChevronRightIcon,
   ChevronUpIcon,
   FilterIcon,
-  SearchIcon,
+  SearchIcon
 } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -33,11 +31,11 @@ import AppTextField from '@/components/elements/app-text-field/app-text-field'
 import AppTypography from '@/components/elements/app-typography/app-typography'
 import axiosInstance from '@/consts/axios-instance'
 import CitiesList from './components/cities-list/cities-list'
-import EventCard from './components/event-card/event-card'
 import EventsFilterBottomSheet from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
 import { EventsFiltersState } from './components/events-filter-bottom-sheet/types'
 import { createInitialEventsFiltersState } from './components/events-filter-bottom-sheet/utils'
 
+import EventsSection from './components/events-section/events-section'
 import styles from './styles'
 
 const searchInputPlaceholderColors = {
@@ -49,6 +47,9 @@ interface GetEventsResponseDto {
   items: {
     id: number,
     title: string,
+    image: {
+      src: string,
+    },
     venue: {
       name: string,
     },
@@ -306,70 +307,24 @@ console.log(JSON.stringify(venuesWithEvents, null, 2))
 
        
         <ScrollView>
-          <View style={stylesWithInsets.sectionHeaderContainer}>
-            <AppTypography variant='h3' text='Upcoming events' />
-
-            <TouchableOpacity style={stylesWithInsets.seeAllButton}>
-              <AppTypography variant='subtitle' text='See all' />
-              <ChevronRightIcon color='#000' size={16} />
-            </TouchableOpacity>
-          </View>
-          
-          <ScrollView
-            horizontal
-            contentContainerStyle={stylesWithInsets.eventsListContainer}
-          >
-            {isPopularEventsFetching ? (
-              <View style={stylesWithInsets.sectionLoaderContainer}>
-                <ActivityIndicator size={96} color='#3C896D' />
-              </View>
-            ) : (popularEventsData?.items ?? []).map((event) => (
-                <TouchableOpacity key={event.id} activeOpacity={0.7}>
-                  <EventCard
-                    containerWidth={windowDimensions.width * 0.7}
-                    title={event.title}
-                    venue={event.venue}
-                    city={event.city}
-                    startDate={new Date(event.startDate)}
-                  />
-                </TouchableOpacity>
-              )
-            )}
-          </ScrollView>
+          <EventsSection
+            title='Upcoming events'
+            isEventsFetching={isPopularEventsFetching}
+            events={popularEventsData?.items ?? []}
+          />
 
           {isVenuesWithEventsFetching ? (
-              <View style={stylesWithInsets.sectionLoaderContainer}>
-                <ActivityIndicator size={96} color='#3C896D' />
-              </View>
-            ) : venuesWithEvents?.items.map((venue) => (
-              <Fragment key={venue.id}>
-                <View style={stylesWithInsets.sectionHeaderContainer}>
-                  <AppTypography variant='h3' text={venue.name} />
-
-                  <TouchableOpacity style={stylesWithInsets.seeAllButton}>
-                    <AppTypography variant='subtitle' text='See all' />
-                    <ChevronRightIcon color='#000' size={16} />
-                  </TouchableOpacity>
-                </View>
-
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={stylesWithInsets.eventsListContainer}
-                >
-                  {venue.events.map((event) => (
-                    <TouchableOpacity key={event.id} activeOpacity={0.7}>
-                      <EventCard
-                        containerWidth={windowDimensions.width * 0.7}
-                        title={event.title}
-                        venue={venue}
-                        city={event.city}
-                        startDate={new Date(event.startDate)}
-                      />
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </Fragment>
-            ))}
+            <View style={stylesWithInsets.sectionLoaderContainer}>
+              <ActivityIndicator size={96} color='#3C896D' />
+            </View>
+          ) : venuesWithEvents?.items.map((venue) => (
+            <EventsSection
+              key={venue.id}
+              title={venue.name}
+              isEventsFetching={false}
+              events={venue.events}
+            />
+          ))}
         </ScrollView>
       </View>
 
