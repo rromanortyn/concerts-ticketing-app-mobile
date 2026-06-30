@@ -322,7 +322,10 @@ const HomeScreen: FC = () => {
         </View>
         {citiesListJsx}
 
-        <ScrollView>
+        <ScrollView
+          style={stylesWithInsets.eventsScrollView}
+          contentContainerStyle={stylesWithInsets.eventsScrollContent}
+        >
           <EventsSection
             title='Upcoming events'
             isEventsFetching={isPopularEventsFetching}

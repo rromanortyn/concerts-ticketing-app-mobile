@@ -14,6 +14,12 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     position: 'relative',
   },
   headerOuterContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    elevation: 10,
     borderBottomLeftRadius: 48,
     borderBottomRightRadius: 48,
   },
@@ -195,6 +201,13 @@ const styles = ({ topInset, windowDimensions }: Props) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: Dimensions.get('window').width - 40,
+  },
+  eventsScrollView: {
+    flex: 1,
+  },
+  eventsScrollContent: {
+    paddingTop: 200,
+    paddingBottom: 24,
   },
 })
 
