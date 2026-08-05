@@ -48,7 +48,8 @@ const RootLayout = () => {
                   <Stack.Screen name='(auth)/sign-up' />
                   <Stack.Screen name='(auth)/login' />
                   <Stack.Screen name='attendee' />
-                  <Stack.Screen name='events/[id]' />
+                  <Stack.Screen name='events/[id]/index' />
+                  <Stack.Screen name='events/[id]/tickets' />
                   <Stack.Screen name='storybook' />
                 </Stack>
               </OutsidePressProvider>

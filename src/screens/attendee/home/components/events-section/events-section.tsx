@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native'
 
+import { Image } from 'expo-image'
 import { router } from 'expo-router'
 import { ChevronRightIcon } from 'lucide-react-native'
 
@@ -58,7 +59,15 @@ const EventsSection: FC<EventsSectionProps> = (props) => {
           <ChevronRightIcon color='#000' size={16} />
         </TouchableOpacity>
       </View>
-          
+
+      {events.length === 0 && !isEventsFetching && (
+        <View style={{ alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <Image source={require('./no-events-found.png')} style={{ width: 300, height: 300, marginBottom: 12 }}/>
+          <AppTypography variant='h3' text='No events planned' style={{ textAlign: 'center', marginBottom: 12 }} />
+          <AppTypography variant='subtitle' text='There are no concerts or events scheduled right now.' style={{ textAlign: 'center', marginBottom: 8 }} />
+          <AppTypography variant='subtitle' text='Check back later for upcoming events and unforgettable experiences.' style={{ textAlign: 'center' }} />
+        </View>
+      )}
       <ScrollView
         horizontal
         contentContainerStyle={styles.eventsListContainer}

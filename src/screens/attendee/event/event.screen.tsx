@@ -23,10 +23,10 @@ import {
 import {
   CalendarDaysIcon,
   MapPinIcon,
-  TicketIcon,
 } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import AppButton from '@/components/elements/app-button/app-button'
 import AppTypography from '@/components/elements/app-typography/app-typography'
 import axiosInstance from '@/consts/axios-instance'
 
@@ -73,18 +73,17 @@ const formatTime = (value: Date): string => {
 }
 
 const EventScreen: FC = () => {
+  const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
 
   const insets = useSafeAreaInsets()
   const windowDimensions = useWindowDimensions()
 
-  const router = useRouter()
-
   const [isSaved, setIsSaved] = useState<boolean>(false)
 
   const stylesWithDimensions = useMemo(() => styles({
     bottomInset: insets.bottom,
-    imageHeight: windowDimensions.height * 0.46,
+    imageHeight: windowDimensions.height * 0.33,
     topInset: insets.top,
   }), [
     insets.bottom,
@@ -281,17 +280,11 @@ const EventScreen: FC = () => {
 
         {event ? (
           <View style={stylesWithDimensions.footerContainer}>
-            <TouchableOpacity
-              style={stylesWithDimensions.ticketButton}
-              activeOpacity={0.7}
-            >
-              <TicketIcon color='#F9F9F9' size={22} />
-              <AppTypography
-                variant='h3'
-                text='Buy Ticket'
-                style={stylesWithDimensions.ticketButtonText}
-              />
-            </TouchableOpacity>
+            <AppButton
+              title='Buy tickets'
+              rightIcon={<Ionicons name='chevron-forward' color='white' size={20} />}
+              onPress={() => router.push(`/events/${event.id}/tickets`)}
+            />
           </View>
         ) : null}
       </View>

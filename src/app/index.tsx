@@ -72,6 +72,7 @@ const Index = () => {
       return response.data
     },
     enabled: Boolean(accessToken),
+    retry: false,
   })
 
   // get /genres
