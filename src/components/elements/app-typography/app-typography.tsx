@@ -6,15 +6,15 @@ import styles from './styles'
 
 const AppTypography: FC<AppTypographyProps> = (props) => {
   const {
-		text,
-		variant,
-		style,
+    text,
+    variant,
+    style,
     numberOfLines = 2,
-	} = props
+  } = props
 
   return (
-		<Text numberOfLines={numberOfLines} style={[styles[variant], style]}>{text}</Text>
-	)
+    <Text numberOfLines={numberOfLines} style={[styles[variant], style]}>{text}</Text>
+  )
 }
 
 export default AppTypography

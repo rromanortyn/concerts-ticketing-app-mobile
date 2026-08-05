@@ -6,7 +6,7 @@ import {
 } from 'react-native'
 
 import AppButtonProps from './app-button.props'
-import styles from './app-button.styles'
+import styles from './styles'
 
 const AppButton: FC<AppButtonProps> = (props) => {
   const {
