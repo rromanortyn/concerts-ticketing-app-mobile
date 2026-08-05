@@ -7,14 +7,13 @@ import {
 } from 'react'
 import {
   ActivityIndicator,
-  Keyboard,
   Platform,
   ScrollView,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   useWindowDimensions,
-  View,
+  View
 } from 'react-native'
 
 import { useQuery } from '@tanstack/react-query'
@@ -35,8 +34,8 @@ import CitiesList from './components/cities-list/cities-list'
 import EventsFilterBottomSheet from './components/events-filter-bottom-sheet/events-filter-bottom-sheet'
 import { EventsFiltersState } from './components/events-filter-bottom-sheet/types'
 import { createInitialEventsFiltersState } from './components/events-filter-bottom-sheet/utils'
-
 import EventsSection from './components/events-section/events-section'
+
 import styles from './styles'
 
 const searchInputPlaceholderColors = {
@@ -81,6 +80,7 @@ const HomeScreen: FC = () => {
   )
   const [search, setSearch] = useState<string>('')
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null)
+  const [isSearchInputVisible, setIsSearchInputVisible] = useState<boolean>(true)
 
   const searchInputRef = useRef<TextInput>(null)
 
@@ -109,14 +109,11 @@ const HomeScreen: FC = () => {
     retry: false,
   })
 
-  useEffect(
-    () => {
-      if (cities && cities.length > 0) {
-        setSelectedCityId(cities[0].id)
-      }
-    },
-    [cities],
-  )
+  useEffect(() => {
+    if (cities && cities.length > 0) {
+      setSelectedCityId(cities[0].id)
+    }
+  }, [cities])
 
   const {
     data: venues = [],
@@ -183,13 +180,7 @@ const HomeScreen: FC = () => {
     retry: false,
   })
 
-  const dismissSearchKeyboard = () => {
-    searchInputRef.current?.blur()
-    Keyboard.dismiss()
-  }
-
   const onCitiesToggle = () => {
-    dismissSearchKeyboard()
     setIsCitiesListOpen((prev) => !prev)
   }
 
@@ -219,10 +210,13 @@ const HomeScreen: FC = () => {
   }
 
   const onCityChange = (id: number) => {
-    dismissSearchKeyboard()
     setSelectedCityId(id)
     setIsCitiesListOpen(false)
   }
+
+  useEffect(() => {
+    setIsSearchInputVisible(!isCitiesListOpen)
+  }, [isCitiesListOpen])
 
   const citySelectorChevronJsx = isCitiesListOpen ? (
     <ChevronUpIcon color='#F9F9F9' size={16} />
@@ -291,27 +285,30 @@ const HomeScreen: FC = () => {
 
             <View style={stylesWithInsets.bottomContainer}>
               <View style={stylesWithInsets.searchContainer}>
-                <AppTextField
-                  ref={searchInputRef}
-                  style={stylesWithInsets.searchInputText}
-                  containerStyle={stylesWithInsets.searchInput}
-                  placeholder='Search...'
-                  placeholderColors={searchInputPlaceholderColors}
-                  value={search}
-                  autoComplete='off'
-                  inputMode='text'
-                  leftAdornment={(isFocused) => {
-                    const color = isFocused
-                      ? searchInputPlaceholderColors.focused
-                      : searchInputPlaceholderColors.default
+                {isSearchInputVisible ? (
+                  <AppTextField
+                    ref={searchInputRef}
+                    style={stylesWithInsets.searchInputText}
+                    containerStyle={stylesWithInsets.searchInput}
+                    placeholder='Search...'
+                    placeholderColors={searchInputPlaceholderColors}
+                    value={search}
+                    autoComplete='off'
+                    inputMode='text'
+                    leftAdornment={(isFocused) => {
+                      const color = isFocused
+                        ? searchInputPlaceholderColors.focused
+                        : searchInputPlaceholderColors.default
 
-                    return (
-                      <SearchIcon color={color} size={32} />
-                    )
-                  }}
-                  leftAdornmentContainerStyle={stylesWithInsets.searchInputLeftAdornmentContainer}
-                  onChangeText={onSearchChange}
-                />
+                      return (
+                        <SearchIcon color={color} size={32} />
+                      )
+                    }}
+                    leftAdornmentContainerStyle={stylesWithInsets.searchInputLeftAdornmentContainer}
+                    onChangeText={onSearchChange}
+                  />) : (
+                    <View style={{ flex: 1, padding: 20, height: 66 }} />
+                  )}
               </View>
 
               <TouchableOpacity

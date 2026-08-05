@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native'
 
 const styles = (isFocused: boolean) => StyleSheet.create({
   container: {
+    height: 66,
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 40,
