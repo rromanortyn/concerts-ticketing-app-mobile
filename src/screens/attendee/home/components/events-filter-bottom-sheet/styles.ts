@@ -110,6 +110,9 @@ const styles = ({ bottomInset, topInset, windowDimensions }: Props) => StyleShee
   filtersSheetHandleIndicator: {
     backgroundColor: '#BDBDBD',
   },
+  filtersLoadingIndicator: {
+    flex: 1,
+  },
   filtersScrollView: {
     flex: 1,
     backgroundColor: '#F9F9F9',

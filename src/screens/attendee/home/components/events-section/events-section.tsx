@@ -61,11 +61,26 @@ const EventsSection: FC<EventsSectionProps> = (props) => {
       </View>
 
       {events.length === 0 && !isEventsFetching && (
-        <View style={{ alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-          <Image source={require('./no-events-found.png')} style={{ width: 300, height: 300, marginBottom: 12 }}/>
-          <AppTypography variant='h3' text='No events planned' style={{ textAlign: 'center', marginBottom: 12 }} />
-          <AppTypography variant='subtitle' text='There are no concerts or events scheduled right now.' style={{ textAlign: 'center', marginBottom: 8 }} />
-          <AppTypography variant='subtitle' text='Check back later for upcoming events and unforgettable experiences.' style={{ textAlign: 'center' }} />
+        <View style={styles.emptyEventsContainer}>
+          <Image
+            source={require('./no-events-found.png')}
+            style={styles.emptyEventsImage}
+          />
+          <AppTypography
+            variant='h3'
+            text='No events planned'
+            style={styles.emptyEventsTitle}
+          />
+          <AppTypography
+            variant='subtitle'
+            text='There are no concerts or events scheduled right now.'
+            style={styles.emptyEventsDescription}
+          />
+          <AppTypography
+            variant='subtitle'
+            text='Check back later for upcoming events and unforgettable experiences.'
+            style={styles.emptyEventsHint}
+          />
         </View>
       )}
       <ScrollView

@@ -146,11 +146,11 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
     selectedDate?: Date,
   ) => {
     setActiveDatePickerField(null)
-  
+
     if (event.type === 'dismissed' || !activeDatePickerField || !selectedDate) {
       return
     }
-  
+
     setSelectedDateFilter('Custom dates')
 
     setFilters((prev) => ({
@@ -269,7 +269,13 @@ const EventsFilterBottomSheet: FC<EventsFilterBottomSheetProps> = (props) => {
       topInset={insets.top}
       onClose={onDismiss}
     >
-      {isLoading ? <ActivityIndicator style={{ flex: 1 }} size={96} color='#3C896D' /> : (
+      {isLoading ? (
+        <ActivityIndicator
+          style={stylesWithInsets.filtersLoadingIndicator}
+          size={96}
+          color='#3C896D'
+        />
+      ) : (
         <BottomSheetScrollView
           style={stylesWithInsets.filtersScrollView}
           contentContainerStyle={stylesWithInsets.filtersScrollContent}

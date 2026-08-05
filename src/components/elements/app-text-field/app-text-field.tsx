@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 
 import AppTextFieldProps from './app-text-field.props'
-import styleSheet from './app-text-field.styles'
+import styleSheet from './styles'
 
 const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
   const {

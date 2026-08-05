@@ -24,6 +24,27 @@ const styles = StyleSheet.create({
     gap: 16,
     paddingHorizontal: 20,
   },
+  emptyEventsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  emptyEventsImage: {
+    width: 300,
+    height: 300,
+    marginBottom: 12,
+  },
+  emptyEventsTitle: {
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  emptyEventsDescription: {
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emptyEventsHint: {
+    textAlign: 'center',
+  },
 })
 
 export default styles

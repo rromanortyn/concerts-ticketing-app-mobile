@@ -13,9 +13,9 @@ type Options = {
 }
 
 type ButtonColors = Record<
-    ButtonIntent,
-    Record<ButtonVariant, string>
-  >
+  ButtonIntent,
+  Record<ButtonVariant, string>
+>
 
 const backgroundColors: ButtonColors = {
   primary: {
@@ -54,8 +54,8 @@ const borderRadius = 32
 const borderWidth = 1.35
 
 const touchableOpacityStyles: Record<
-    ButtonIntent,
-    Record<ButtonVariant, StyleProp<ViewStyle>>
+  ButtonIntent,
+  Record<ButtonVariant, StyleProp<ViewStyle>>
   > = {
   primary: {
     filled: {
