@@ -7,7 +7,7 @@ import {
 } from 'react'
 import {
   ActivityIndicator,
-  InteractionManager,
+  Keyboard,
   Platform,
   ScrollView,
   TextInput,
@@ -183,7 +183,13 @@ const HomeScreen: FC = () => {
     retry: false,
   })
 
+  const dismissSearchKeyboard = () => {
+    searchInputRef.current?.blur()
+    Keyboard.dismiss()
+  }
+
   const onCitiesToggle = () => {
+    dismissSearchKeyboard()
     setIsCitiesListOpen((prev) => !prev)
   }
 
@@ -213,11 +219,9 @@ const HomeScreen: FC = () => {
   }
 
   const onCityChange = (id: number) => {
+    dismissSearchKeyboard()
     setSelectedCityId(id)
-
-    InteractionManager.runAfterInteractions(() => {
-      setIsCitiesListOpen(false)
-    })
+    setIsCitiesListOpen(false)
   }
 
   const citySelectorChevronJsx = isCitiesListOpen ? (
