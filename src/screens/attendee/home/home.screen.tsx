@@ -7,6 +7,7 @@ import {
 } from 'react'
 import {
   ActivityIndicator,
+  InteractionManager,
   Platform,
   ScrollView,
   TextInput,
@@ -213,7 +214,10 @@ const HomeScreen: FC = () => {
 
   const onCityChange = (id: number) => {
     setSelectedCityId(id)
-    setIsCitiesListOpen(false)
+
+    InteractionManager.runAfterInteractions(() => {
+      setIsCitiesListOpen(false)
+    })
   }
 
   const citySelectorChevronJsx = isCitiesListOpen ? (
