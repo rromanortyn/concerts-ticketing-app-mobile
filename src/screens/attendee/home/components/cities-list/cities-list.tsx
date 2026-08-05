@@ -27,6 +27,7 @@ const CitiesList: FC<CitiesListProps> = (props) => {
         />
       )}
       keyExtractor={(item) => `${item.id}`}
+      keyboardShouldPersistTaps='always'
     />
   )
 }
