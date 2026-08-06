@@ -7,6 +7,7 @@ import {
 } from 'react'
 import {
   ActivityIndicator,
+  Dimensions,
   Platform,
   ScrollView,
   TextInput,
@@ -36,6 +37,8 @@ import { EventsFiltersState } from './components/events-filter-bottom-sheet/type
 import { createInitialEventsFiltersState } from './components/events-filter-bottom-sheet/utils'
 import EventsSection from './components/events-section/events-section'
 
+import AppButton from '@/components/elements/app-button/app-button'
+import { Image } from 'expo-image'
 import styles from './styles'
 
 const searchInputPlaceholderColors = {
@@ -81,8 +84,13 @@ const HomeScreen: FC = () => {
   const [search, setSearch] = useState<string>('')
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null)
   const [isSearchInputVisible, setIsSearchInputVisible] = useState<boolean>(true)
+  const [inviteButtonDimensions, setInviteButtonDimensions] = useState<{ width: number, height: number }>({
+    width: 0,
+    height: 0,
+  })
 
   const searchInputRef = useRef<TextInput>(null)
+  const inviteButtonRef = useRef<View>(null)
 
   const stylesWithInsets = useMemo(() => styles({
     topInset: insets.top,
@@ -91,6 +99,14 @@ const HomeScreen: FC = () => {
     insets.top,
     windowDimensions,
   ])
+
+  useEffect(() => {
+    if (inviteButtonRef.current) {
+      inviteButtonRef.current.measure((x, y, width, height, pageX, pageY) => {
+        setInviteButtonDimensions({ width, height })
+      })
+    }
+  }, [inviteButtonRef.current])
 
   const {
     data: cities = [],
@@ -144,7 +160,6 @@ const HomeScreen: FC = () => {
     refetchOnReconnect: false,
     retry: false,
   })
-
 
   const {
     data: genres = [],
@@ -242,15 +257,16 @@ const HomeScreen: FC = () => {
       <ActivityIndicator size={96} color='#3C896D' />
     </View>
   ) : venuesWithEvents?.items.map((venue) => (
-    <EventsSection
-      key={venue.id}
-      title={venue.name}
-      isEventsFetching={false}
-      events={venue.events.map((event) => ({
-        ...event,
-        venue,
-      }))}
-    />
+    <View key={venue.id} style={{ marginTop: 28 }}>
+      <EventsSection
+        title={venue.name}
+        isEventsFetching={false}
+        events={venue.events.map((event) => ({
+          ...event,
+          venue,
+        }))}
+      />
+    </View>
   ))
 
   if (isCitiesFetching) {
@@ -331,11 +347,44 @@ const HomeScreen: FC = () => {
           style={stylesWithInsets.eventsScrollView}
           contentContainerStyle={stylesWithInsets.eventsScrollContent}
         >
-          <EventsSection
-            title='Upcoming events'
-            isEventsFetching={isPopularEventsFetching}
-            events={popularEventsData?.items ?? []}
-          />
+          <View style={{ marginTop: 40, marginBottom: 28 }}>
+            <EventsSection
+              title='Upcoming events'
+              isEventsFetching={isPopularEventsFetching}
+              events={popularEventsData?.items ?? []}
+            />
+          </View>
+
+          <View style={{
+              width: Dimensions.get('window').width - 40,
+              backgroundColor: '#3C896D',
+              borderRadius: 16,
+              marginHorizontal: 20,
+              padding: 20,
+          }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View>
+                <AppTypography variant='h3' text='Invite your friends' style={{ color: '#F9F9F9', marginBottom: 8 }} />
+                <AppTypography variant='body' text='Get $20 for tickets' style={{ color: '#F9F9F9', marginBottom: 16 }} />
+              </View>
+
+              <Image source={require('./gift.png')} style={{ width: 80, height: 48 }} />
+            </View>
+
+            <View style={{
+              borderRadius: 32,
+              width: '80%',
+              backgroundColor: '#F7F7F8',
+              height: inviteButtonDimensions.height,
+            }}>
+              <AppButton
+                ref={inviteButtonRef}
+                intent='secondary'
+                title='Invite'
+                onPress={() => {}}
+              />
+            </View>
+          </View>
 
           {venuesSectionsJsx}
         </ScrollView>

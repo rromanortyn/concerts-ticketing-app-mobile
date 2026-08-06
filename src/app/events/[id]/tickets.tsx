@@ -1,12 +1,12 @@
 import { FC, useState } from 'react'
 import { View } from 'react-native'
 
+import { ChevronRightIcon } from 'lucide-react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import AppButton from '@/components/elements/app-button/app-button'
 import AppIconButton from '@/components/elements/app-icon-button/app-icon-button'
 import AppTypography from '@/components/elements/app-typography/app-typography'
-
 const Tickets: FC = () => {
   const [count, setCount] = useState<number>(1)
 
@@ -36,7 +36,7 @@ const Tickets: FC = () => {
 
       <AppButton
         title='Go to payment'
-        rightIcon={<AppIconButton name='chevron-forward' size={24} />}
+        rightIcon={<ChevronRightIcon color='#F9F9F9' size={24} />}
         onPress={() => {}}
       />
     </SafeAreaView>

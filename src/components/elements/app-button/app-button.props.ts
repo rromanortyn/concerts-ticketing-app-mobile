@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
-import { StyleProp, ViewStyle } from 'react-native'
+import { TouchableOpacityProps } from 'react-native'
 
 const buttonIntents = [
   'primary',
+  'secondary',
   'danger',
 ] as const
 
@@ -14,7 +15,7 @@ const buttonVariants = [
 export type ButtonIntent = typeof buttonIntents[number]
 export type ButtonVariant = typeof buttonVariants[number]
 
-interface AppButtonProps {
+type AppButtonProps ={
   title: string,
   onPress: () => void,
   intent?: ButtonIntent,
@@ -22,7 +23,6 @@ interface AppButtonProps {
   isDisabled?: boolean,
   leftIcon?: ReactNode,
   rightIcon?: ReactNode,
-  style?: StyleProp<ViewStyle>,
-}
+} & TouchableOpacityProps
 
 export default AppButtonProps

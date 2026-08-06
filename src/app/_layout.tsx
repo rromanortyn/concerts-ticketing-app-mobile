@@ -1,3 +1,5 @@
+import { useColorScheme } from 'react-native'
+
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,14 +8,12 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { useColorScheme } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { EventProvider as OutsidePressProvider } from 'react-native-outside-press'
 import 'react-native-reanimated'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
-import useAuthStore from '@/zustand/auth.store'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,8 +26,6 @@ const queryClient = new QueryClient({
 const RootLayout = () => {
   const colorScheme = useColorScheme()
   const theme = colorScheme === 'dark' ? DarkTheme : DefaultTheme
-
-  const { user } = useAuthStore()
 
   return (
     <ThemeProvider value={{

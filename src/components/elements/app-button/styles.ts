@@ -17,38 +17,50 @@ type ButtonColors = Record<
   Record<ButtonVariant, string>
 >
 
-const backgroundColors: ButtonColors = {
+const backgroundColors = {
   primary: {
     filled: '#3C896D',
+    outlined: '#F7F7F8',
+  },
+  secondary: {
+    filled: '#F7F7F8',
     outlined: '#F7F7F8',
   },
   danger: {
     filled: '#8f1322',
     outlined: '#F7F7F8',
   },
-}
+} as const satisfies ButtonColors
 
-const textColors: ButtonColors = {
+const textColors = {
   primary: {
     filled: '#ECE8E8',
     outlined: '#3C896D',
+  },
+  secondary: {
+    filled: '#3C896D',
+    outlined: '#F7F7F8',
   },
   danger: {
     filled: '#ECE8E8',
     outlined: '#8F1322',
   },
-}
+} as const satisfies ButtonColors
 
-const borderColors: ButtonColors = {
+const borderColors = {
   primary: {
     filled: '#3C896D',
     outlined: '#3C896D',
+  },
+  secondary: {
+    filled: '#F7F7F8',
+    outlined: '#F7F7F8',
   },
   danger: {
     filled: '#8F1322',
     outlined: '#8F1322',
   },
-}
+} as const satisfies ButtonColors
 
 const borderRadius = 32
 const borderWidth = 1.35
@@ -69,6 +81,20 @@ const touchableOpacityStyles: Record<
       borderWidth,
       borderColor: borderColors.primary.outlined,
       backgroundColor: backgroundColors.primary.outlined,
+    },
+  },
+  secondary: {
+    filled: {
+      borderRadius,
+      borderWidth,
+      borderColor: borderColors.secondary.filled,
+      backgroundColor: backgroundColors.secondary.filled,
+    },
+    outlined: {
+      borderRadius,
+      borderWidth,
+      borderColor: borderColors.secondary.outlined,
+      backgroundColor: backgroundColors.secondary.outlined,
     },
   },
   danger: {

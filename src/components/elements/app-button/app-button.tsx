@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import {
   Text,
   TouchableOpacity,
@@ -8,7 +8,7 @@ import {
 import AppButtonProps from './app-button.props'
 import styles from './styles'
 
-const AppButton: FC<AppButtonProps> = (props) => {
+const AppButton = forwardRef<View, AppButtonProps>((props, ref) => {
   const {
     title,
     onPress,
@@ -31,6 +31,7 @@ const AppButton: FC<AppButtonProps> = (props) => {
 
   return (
     <TouchableOpacity
+      ref={ref}
       style={[
         stylesMemo.touchableOpacity,
         style,
@@ -48,6 +49,6 @@ const AppButton: FC<AppButtonProps> = (props) => {
       </View>
     </TouchableOpacity>
   )
-}
+})
 
 export default AppButton

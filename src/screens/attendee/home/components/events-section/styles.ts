@@ -2,7 +2,6 @@ import { Dimensions, StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({
   sectionHeaderContainer: {
-    paddingTop: 40,
     paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
