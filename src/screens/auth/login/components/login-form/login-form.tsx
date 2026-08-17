@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import {
   TextInput,
   TouchableWithoutFeedback,
@@ -22,28 +22,40 @@ import getErrorMessageJsx from '@/utils/get-error-message-jsx'
 import loginFormSchema from './consts/login-form-schema'
 import styles from './styles'
 
-interface SignUpFirstStepState {
+interface LoginState {
   email: string,
   password: string,
 }
 
-interface SignUpFormFirstStepProps {
-  onSubmit: (data: SignUpFirstStepState) => void,
-  defaultValues?: SignUpFirstStepState,
+interface LoginFormProps {
+  onSubmit: (data: LoginState) => void,
+  serverSideErrors: Partial<LoginState>
+  defaultValues?: LoginState,
 }
 
-const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
-  const { onSubmit, defaultValues } = props
+const LoginForm: FC<LoginFormProps> = (props) => {
+  const {
+    onSubmit,
+    serverSideErrors,
+    defaultValues,
+  } = props
 
   const passwordInputRef = useRef<TextInput>(null)
   const emailInputRef = useRef<TextInput>(null)
 
+  const [hasPasswordError, setHasPasswordError] = useState<boolean>(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (serverSideErrors.password) {
+      setHasPasswordError(true)
+    }
+  }, [serverSideErrors.password])
 
   const {
     control,
     handleSubmit,
-  } = useForm<SignUpFirstStepState>({
+  } = useForm<LoginState>({
     mode: 'onBlur',
     defaultValues: defaultValues || {
       email: '',
@@ -56,6 +68,11 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
     setIsPasswordVisible(!isPasswordVisible)
   }
 
+  const onPasswordChange = (value: string, onChange: (...events: any[]) => void) => {
+    onChange(value)
+    setHasPasswordError(false)
+  }
+
   const passwordInputType = isPasswordVisible ? 'text' : 'password'
 
   const passwordEyeIcon = isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />
@@ -64,6 +81,8 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
       {passwordEyeIcon}
     </TouchableWithoutFeedback>
   )
+
+  const passwordErrorMessageFromBe = hasPasswordError ? serverSideErrors.password : undefined
 
   return (
     <>
@@ -128,9 +147,9 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
                 value={value}
                 leftAdornment={<LockIcon />}
                 rightAdornment={passwordRightAdornment}
-                onChangeText={onChange}
+                onChangeText={(value) => onPasswordChange(value, onChange)}
               />
-              {getErrorMessageJsx(error?.message)}
+              {getErrorMessageJsx(passwordErrorMessageFromBe ?? error?.message)}
             </View>
           )}
         />
@@ -146,4 +165,4 @@ const SignUpFormFirstStep: FC<SignUpFormFirstStepProps> = (props) => {
   )
 }
 
-export default SignUpFormFirstStep
+export default LoginForm

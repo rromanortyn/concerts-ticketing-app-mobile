@@ -2,25 +2,19 @@ import { FC } from 'react'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { useRouter } from 'expo-router'
 
-import axiosInstance from '@/consts/axios-instance'
+import authService, { LoginRequestDto } from '@/services/auth/auth.service'
 import AsyncStorageKey from '@/types/enums/async-storage-key.enum'
 import LoginForm from './components/login-form/login-form'
-
-interface LoginRequestDto {
-  email: string,
-  password: string,
-}
 
 const LoginScreen: FC = () => {
   const router = useRouter()
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginRequestDto) => {
-      const response = await axiosInstance.post('/auth/login', data)
-
-      return response.data
+      return authService.login(data)
     },
     onSuccess: async (data) => {
       await AsyncStorage.setItem(AsyncStorageKey.AccessToken, data.accessToken)
@@ -36,9 +30,24 @@ const LoginScreen: FC = () => {
     await loginMutation.mutateAsync(dto)
   }
 
+  const getPasswordErrorMessage = () => {
+    if (loginMutation.error === null) {
+      return undefined
+    }
+
+    const { response } = loginMutation.error as AxiosError
+    
+    return (response?.data as { message: string })?.message
+  }
+
   return (
     <>
-      <LoginForm onSubmit={onSubmit} />
+      <LoginForm
+        onSubmit={onSubmit}
+        serverSideErrors={{
+          password: getPasswordErrorMessage(),
+        }}
+      />
     </>
   )
 }
