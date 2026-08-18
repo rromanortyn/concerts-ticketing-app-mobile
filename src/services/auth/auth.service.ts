@@ -1,4 +1,4 @@
-import axiosInstance from '@/consts/axios-instance'
+import axiosService from './axios.service'
 
 export interface LoginRequestDto {
 	email: string,
@@ -10,10 +10,10 @@ export interface LoginResponseDto {
 }
 
 const authService = {
-	login: async (dto: LoginRequestDto): Promise<LoginResponseDto> => {
-		const response = await axiosInstance.post('/auth/login', dto)
+	login: async (dto: LoginRequestDto): Promise<LoginResponseDto | undefined> => {
+		const response = await axiosService.post<LoginRequestDto, LoginResponseDto>('/auth/login', dto)
 
-    return response.data
+  	return response
 	},
 }
 

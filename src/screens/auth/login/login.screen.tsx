@@ -17,7 +17,7 @@ const LoginScreen: FC = () => {
       return authService.login(data)
     },
     onSuccess: async (data) => {
-      await AsyncStorage.setItem(AsyncStorageKey.AccessToken, data.accessToken)
+      await AsyncStorage.setItem(AsyncStorageKey.AccessToken, data!.accessToken)
 
       router.push('/')
     },
