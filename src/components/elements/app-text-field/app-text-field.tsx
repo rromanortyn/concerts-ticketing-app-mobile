@@ -5,6 +5,7 @@ import {
   useState,
 } from 'react'
 import {
+  BlurEvent,
   GestureResponderEvent,
   TextInput,
   TouchableWithoutFeedback,
@@ -19,6 +20,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
     placeholder,
     value,
     onChangeText,
+    onBlur,
     type = 'primary',
     isDisabled = false,
     autoCapitalize = 'none',
@@ -43,8 +45,9 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
     setIsFocused(true)
   }
 
-  const onBlur = () => {
+  const _onBlur = (e: BlurEvent) => {
     setIsFocused(false)
+    onBlur?.(e)
   }
 
   const onPress = () => {
@@ -78,7 +81,7 @@ const AppTextField = forwardRef<TextInput, AppTextFieldProps>((props, ref) => {
           inputMode={inputMode}
           onChangeText={onChangeText}
           onFocus={onFocus}
-          onBlur={onBlur}
+          onBlur={_onBlur}
         />
         <TouchableWithoutFeedback onPress={onRightAdornmentPress}>
           <View style={styles.rightAdornmentContainer}>

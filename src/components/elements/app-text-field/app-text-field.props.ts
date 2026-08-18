@@ -7,9 +7,10 @@ import {
 } from 'react-native'
 
 interface AppTextFieldProps {
-  placeholder: string
-  value: string
-  onChangeText: (text: string) => void
+  placeholder: string,
+  value: string,
+  onChangeText: (text: string) => void,
+  onBlur?: TextInputProps['onBlur'],
   style?: StyleProp<TextStyle>,
   containerStyle?: StyleProp<ViewStyle>,
   hasError?: boolean,

@@ -21,9 +21,6 @@ const LoginScreen: FC = () => {
 
       router.push('/')
     },
-    onError: (error) => {
-      console.log(error)
-    },
   })
 
   const onSubmit = async (dto: LoginRequestDto) => {
@@ -47,6 +44,7 @@ const LoginScreen: FC = () => {
         serverSideErrors={{
           password: getPasswordErrorMessage(),
         }}
+        isFetching={loginMutation.isPending}
       />
     </>
   )

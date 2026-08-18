@@ -113,9 +113,57 @@ const touchableOpacityStyles: Record<
   },
 }
 
+const disabledTouchableOpacityStyles: Record<
+  ButtonIntent,
+  Record<ButtonVariant, StyleProp<ViewStyle>>
+  > = {
+  primary: {
+    filled: {
+      borderRadius,
+      borderWidth,
+      borderColor: '#9EC4B6',
+      backgroundColor: backgroundColors.primary.filled,
+    },
+    outlined: {
+      borderRadius,
+      borderWidth,
+      borderColor: '#9EC4B6',
+      backgroundColor: backgroundColors.primary.outlined,
+    },
+  },
+  secondary: {
+    filled: {
+      borderRadius,
+      borderWidth,
+      borderColor: '#FBFBFC',
+      backgroundColor: backgroundColors.secondary.filled,
+    },
+    outlined: {
+      borderRadius,
+      borderWidth,
+      borderColor: '#FBFBFC',
+      backgroundColor: backgroundColors.secondary.outlined,
+    },
+  },
+  danger: {
+    filled: {
+      borderRadius,
+      borderWidth,
+      borderColor: '#C78990',
+      backgroundColor: backgroundColors.danger.filled,
+    },
+    outlined: {
+      borderRadius,
+      borderWidth,
+      borderColor: '#C78990',
+      backgroundColor: backgroundColors.danger.outlined,
+    },
+  },
+}
+
 const styles = ({ intent, variant, isDisabled }: Options) => StyleSheet.create({
   touchableOpacity: {
-    ...touchableOpacityStyles[intent][variant],
+    ...(isDisabled ? disabledTouchableOpacityStyles[intent][variant] : touchableOpacityStyles[intent][variant]),
     position: 'relative',
     width: '100%',
     height: 60,

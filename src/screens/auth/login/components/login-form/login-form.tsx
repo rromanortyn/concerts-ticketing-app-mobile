@@ -1,4 +1,9 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import {
+  FC,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   TextInput,
   TouchableWithoutFeedback,
@@ -28,16 +33,18 @@ interface LoginState {
 }
 
 interface LoginFormProps {
-  onSubmit: (data: LoginState) => void,
-  serverSideErrors: Partial<LoginState>
+  serverSideErrors: Partial<LoginState>,
+  isFetching: boolean,
   defaultValues?: LoginState,
+  onSubmit: (data: LoginState) => void,
 }
 
 const LoginForm: FC<LoginFormProps> = (props) => {
   const {
-    onSubmit,
+    isFetching,
     serverSideErrors,
     defaultValues,
+    onSubmit,
   } = props
 
   const passwordInputRef = useRef<TextInput>(null)
@@ -54,7 +61,9 @@ const LoginForm: FC<LoginFormProps> = (props) => {
 
   const {
     control,
+    watch,
     handleSubmit,
+    clearErrors,
   } = useForm<LoginState>({
     mode: 'onBlur',
     defaultValues: defaultValues || {
@@ -71,7 +80,11 @@ const LoginForm: FC<LoginFormProps> = (props) => {
   const onPasswordChange = (value: string, onChange: (...events: any[]) => void) => {
     onChange(value)
     setHasPasswordError(false)
+    clearErrors('password')
   }
+
+  const values = watch()
+  const isFormValid = loginFormSchema.safeParse(values).success
 
   const passwordInputType = isPasswordVisible ? 'text' : 'password'
 
@@ -99,7 +112,7 @@ const LoginForm: FC<LoginFormProps> = (props) => {
           control={control}
           name='email'
           render={({
-            field: { value, onChange },
+            field: { value, onChange, onBlur },
             fieldState: { error },
           }) => (
             <View style={styles.formFieldContainer}>
@@ -118,7 +131,11 @@ const LoginForm: FC<LoginFormProps> = (props) => {
                 leftAdornment={
                   <AtSign />
                 }
-                onChangeText={onChange}
+                onChangeText={(value) => {
+                  onChange(value)
+                  clearErrors('email')
+                }}
+                onBlur={onBlur}
               />
               {getErrorMessageJsx(error?.message)}
             </View>
@@ -129,7 +146,7 @@ const LoginForm: FC<LoginFormProps> = (props) => {
           control={control}
           name='password'
           render={({
-            field: { value, onChange },
+            field: { value, onChange, onBlur },
             fieldState: { error },
           }) => (
             <View style={styles.formFieldContainer}>
@@ -148,6 +165,7 @@ const LoginForm: FC<LoginFormProps> = (props) => {
                 leftAdornment={<LockIcon />}
                 rightAdornment={passwordRightAdornment}
                 onChangeText={(value) => onPasswordChange(value, onChange)}
+                onBlur={onBlur}
               />
               {getErrorMessageJsx(passwordErrorMessageFromBe ?? error?.message)}
             </View>
@@ -160,6 +178,7 @@ const LoginForm: FC<LoginFormProps> = (props) => {
           onPress={handleSubmit(onSubmit)}
           intent='primary'
           variant='filled'
+          isDisabled={!isFormValid}
         />
     </>
   )
